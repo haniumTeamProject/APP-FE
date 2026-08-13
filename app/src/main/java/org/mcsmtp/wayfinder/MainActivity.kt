@@ -1,6 +1,8 @@
 package org.mcsmtp.wayfinder
 
+import android.content.Context
 import android.os.Bundle
+import android.view.accessibility.AccessibilityManager
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
@@ -47,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         machine = NavStateMachine()
-        speech = SpeechOutput()
+        speech = SpeechOutput(this)
         haptics = Haptics(this)
         api = MockApi(this)
 
@@ -66,6 +68,18 @@ class MainActivity : AppCompatActivity() {
         })
 
         if (savedInstanceState == null) render(NavState.READY)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // TalkBack이 꺼져 있으면 일반 안내도 자체 TTS로 읽어야 한다.
+        val am = getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
+        speech.talkBackEnabled = am?.isTouchExplorationEnabled == true
+    }
+
+    override fun onDestroy() {
+        speech.shutdown()
+        super.onDestroy()
     }
 
     private fun render(state: NavState) {
