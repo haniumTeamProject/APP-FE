@@ -1,0 +1,89 @@
+{
+  "routeId": "rt_mock_0001",
+  "floorId": "suwon_ict-4",
+  "fromBeaconId": "B1",
+  "toDestinationId": "lm_409a",
+  "toDestinationName": "409호",
+  "totalDistanceM": 48.5,
+  "estimatedSeconds": 70,
+  "steps": [
+    {
+      "seq": 1,
+      "beaconId": "B1",
+      "turn": null,
+      "template": "start",
+      "instruction": "409호로 안내합니다. 손이 닿는 벽을 짚고 걸어주세요."
+    },
+    {
+      "seq": 2,
+      "beaconId": "B3",
+      "turn": null,
+      "template": "straight_long",
+      "instruction": "계속 직진하세요."
+    },
+    {
+      "seq": 3,
+      "beaconId": "B4",
+      "turn": null,
+      "template": "silent",
+      "instruction": null
+    },
+    {
+      "seq": 4,
+      "beaconId": "B5",
+      "turn": "right",
+      "template": "turn",
+      "instruction": "벽을 따라 오른쪽으로 꺾으세요."
+    },
+    {
+      "seq": 5,
+      "beaconId": "B7",
+      "turn": null,
+      "template": "silent",
+      "instruction": null
+    },
+    {
+      "seq": 6,
+      "beaconId": "B17",
+      "turn": null,
+      "template": "straight_long",
+      "instruction": "계속 직진하세요."
+    },
+    {
+      "seq": 7,
+      "beaconId": "B21",
+      "turn": null,
+      "template": "cross_enter",
+      "instruction": "벽이 끊깁니다. 손을 떼고 직진하세요."
+    },
+    {
+      "seq": 8,
+      "beaconId": "B22",
+      "turn": "left",
+      "template": "cross_turn",
+      "instruction": "벽에 도달하면 왼쪽으로 꺾으세요."
+    },
+    {
+      "seq": 9,
+      "beaconId": "B23",
+      "turn": null,
+      "template": "silent",
+      "instruction": null
+    },
+    {
+      "seq": 10,
+      "beaconId": "B24",
+      "turn": null,
+      "template": "stairs_warn",
+      "instruction": "오른쪽에 계단이 있습니다."
+    },
+    {
+      "seq": 11,
+      "beaconId": "B25",
+      "turn": null,
+      "template": "arrive",
+      "instruction": "409호입니다. 문은 왼쪽에 있습니다.",
+      "isArrival": true
+    }
+  ]
+}

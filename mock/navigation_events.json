@@ -1,0 +1,41 @@
+{
+  "description": "WS /ws/navigation 의 서버→앱 메시지를 순서대로 재생하기 위한 목 데이터. intervalMs 간격으로 하나씩 흘려보내면 실제 안내 흐름 전체를 서버 없이 재현할 수 있다.",
+  "routeId": "rt_mock_0001",
+  "intervalMs": 1000,
+  "events": [
+    { "currentStep": 1, "currentBeaconId": "B1", "nextBeaconId": "B3", "progress": 0.0, "event": "advance", "utterance": "409호로 안내합니다. 손이 닿는 벽을 짚고 걸어주세요.", "haptic": "guide" },
+    { "currentStep": 1, "currentBeaconId": "B1", "nextBeaconId": "B3", "progress": 0.2, "event": "none", "utterance": null, "haptic": null },
+    { "currentStep": 1, "currentBeaconId": "B1", "nextBeaconId": "B3", "progress": 0.5, "event": "none", "utterance": null, "haptic": null },
+    { "currentStep": 1, "currentBeaconId": "B1", "nextBeaconId": "B3", "progress": 0.8, "event": "none", "utterance": null, "haptic": null },
+
+    { "currentStep": 2, "currentBeaconId": "B3", "nextBeaconId": "B4", "progress": 0.0, "event": "advance", "utterance": "계속 직진하세요.", "haptic": "guide" },
+    { "currentStep": 2, "currentBeaconId": "B3", "nextBeaconId": "B4", "progress": 0.4, "event": "none", "utterance": null, "haptic": null },
+    { "currentStep": 2, "currentBeaconId": "B3", "nextBeaconId": "B4", "progress": 0.9, "event": "none", "utterance": null, "haptic": null },
+
+    { "currentStep": 3, "currentBeaconId": "B4", "nextBeaconId": "B5", "progress": 0.0, "event": "advance", "utterance": null, "haptic": null },
+    { "currentStep": 3, "currentBeaconId": "B4", "nextBeaconId": "B5", "progress": 0.5, "event": "none", "utterance": null, "haptic": null },
+
+    { "currentStep": 4, "currentBeaconId": "B5", "nextBeaconId": "B7", "progress": 0.0, "event": "advance", "utterance": "벽을 따라 오른쪽으로 꺾으세요.", "haptic": "guide" },
+    { "currentStep": 4, "currentBeaconId": "B5", "nextBeaconId": "B7", "progress": 0.6, "event": "none", "utterance": null, "haptic": null },
+
+    { "currentStep": 5, "currentBeaconId": "B7", "nextBeaconId": "B17", "progress": 0.0, "event": "advance", "utterance": null, "haptic": null },
+    { "currentStep": 5, "currentBeaconId": "B7", "nextBeaconId": "B17", "progress": 0.5, "event": "none", "utterance": null, "haptic": null },
+
+    { "currentStep": 6, "currentBeaconId": "B17", "nextBeaconId": "B21", "progress": 0.0, "event": "advance", "utterance": "계속 직진하세요.", "haptic": "guide" },
+    { "currentStep": 6, "currentBeaconId": "B17", "nextBeaconId": "B21", "progress": 0.5, "event": "none", "utterance": null, "haptic": null },
+
+    { "currentStep": 7, "currentBeaconId": "B21", "nextBeaconId": "B22", "progress": 0.0, "event": "advance", "utterance": "벽이 끊깁니다. 손을 떼고 직진하세요.", "haptic": "warn" },
+    { "currentStep": 7, "currentBeaconId": "B21", "nextBeaconId": "B22", "progress": 0.5, "event": "none", "utterance": null, "haptic": null },
+
+    { "currentStep": 8, "currentBeaconId": "B22", "nextBeaconId": "B23", "progress": 0.0, "event": "advance", "utterance": "벽에 도달하면 왼쪽으로 꺾으세요.", "haptic": "guide" },
+    { "currentStep": 8, "currentBeaconId": "B22", "nextBeaconId": "B23", "progress": 0.6, "event": "none", "utterance": null, "haptic": null },
+
+    { "currentStep": 9, "currentBeaconId": "B23", "nextBeaconId": "B24", "progress": 0.0, "event": "advance", "utterance": null, "haptic": null },
+    { "currentStep": 9, "currentBeaconId": "B23", "nextBeaconId": "B24", "progress": 0.5, "event": "none", "utterance": null, "haptic": null },
+
+    { "currentStep": 10, "currentBeaconId": "B24", "nextBeaconId": "B25", "progress": 0.0, "event": "advance", "utterance": "오른쪽에 계단이 있습니다.", "haptic": "warn" },
+    { "currentStep": 10, "currentBeaconId": "B24", "nextBeaconId": "B25", "progress": 0.6, "event": "none", "utterance": null, "haptic": null },
+
+    { "currentStep": 11, "currentBeaconId": "B25", "nextBeaconId": null, "progress": 1.0, "event": "arrive", "utterance": "409호입니다. 문은 왼쪽에 있습니다.", "haptic": "arrive" }
+  ]
+}

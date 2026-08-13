@@ -1,0 +1,30 @@
+{
+  "floorId": "suwon_ict-4",
+  "floorName": "수원대학교 ICT융합대학 4층",
+  "destinations": [
+    { "id": "lm_401", "name": "401호", "aliases": ["401", "사백일", "401호실", "사백일호"], "type": "room", "doorSide": "right" },
+    { "id": "lm_402", "name": "402호", "aliases": ["402", "사백이", "402호실", "사백이호"], "type": "room", "doorSide": "right" },
+    { "id": "lm_403", "name": "403호", "aliases": ["403", "사백삼", "403호실", "사백삼호"], "type": "room", "doorSide": "right" },
+    { "id": "lm_404", "name": "404호", "aliases": ["404", "사백사", "404호실", "사백사호"], "type": "room", "doorSide": "right" },
+    { "id": "lm_405a", "name": "405호 앞문", "aliases": ["405", "사백오", "405호실", "405호 앞문"], "type": "room", "doorSide": "right" },
+    { "id": "lm_405b", "name": "405호 뒷문", "aliases": ["405", "사백오", "405호 뒷문"], "type": "room", "doorSide": "right" },
+    { "id": "lm_406", "name": "406호", "aliases": ["406", "사백육", "406호실"], "type": "room", "doorSide": "right" },
+    { "id": "lm_407", "name": "407호", "aliases": ["407", "사백칠", "407호실"], "type": "room", "doorSide": "left" },
+    { "id": "lm_408", "name": "408호", "aliases": ["408", "사백팔", "408호실"], "type": "room", "doorSide": "left" },
+    { "id": "lm_409a", "name": "409호 앞문", "aliases": ["409", "사백구", "409호실", "409호 앞문"], "type": "room", "doorSide": "left" },
+    { "id": "lm_409b", "name": "409호 뒷문", "aliases": ["409", "사백구", "409호 뒷문"], "type": "room", "doorSide": "left" },
+    { "id": "lm_410", "name": "410호", "aliases": ["410", "사백십", "410호실"], "type": "room", "doorSide": "left" },
+    { "id": "lm_411", "name": "411호", "aliases": ["411", "사백십일", "411호실"], "type": "room", "doorSide": "left" },
+    { "id": "lm_412", "name": "412호", "aliases": ["412", "사백십이", "412호실"], "type": "room", "doorSide": "left" },
+    { "id": "lm_413", "name": "413호", "aliases": ["413", "사백십삼", "413호실"], "type": "room", "doorSide": "right" },
+    { "id": "lm_414", "name": "414호", "aliases": ["414", "사백십사", "414호실"], "type": "room", "doorSide": "right" },
+    { "id": "lm_415", "name": "415호", "aliases": ["415", "사백십오", "415호실"], "type": "room", "doorSide": "right" },
+    { "id": "lm_wc1", "name": "서편 화장실", "aliases": ["화장실", "서편 화장실", "첫번째 화장실", "왼쪽 화장실"], "type": "restroom", "doorSide": "left" },
+    { "id": "lm_wc2", "name": "동편 화장실", "aliases": ["화장실", "동편 화장실", "두번째 화장실", "오른쪽 화장실"], "type": "restroom", "doorSide": "right" },
+    { "id": "lm_elv1", "name": "1번 엘리베이터", "aliases": ["엘리베이터", "엘베", "승강기", "1번 엘리베이터"], "type": "elevator", "doorSide": null },
+    { "id": "lm_elv2", "name": "2번 엘리베이터", "aliases": ["엘리베이터", "엘베", "승강기", "2번 엘리베이터"], "type": "elevator", "doorSide": null },
+    { "id": "lm_st1", "name": "서편 계단", "aliases": ["계단", "서편 계단", "왼쪽 계단"], "type": "stairs", "doorSide": null },
+    { "id": "lm_st2", "name": "중앙 계단", "aliases": ["계단", "중앙 계단", "가운데 계단"], "type": "stairs", "doorSide": null },
+    { "id": "lm_st3", "name": "동편 계단", "aliases": ["계단", "동편 계단", "오른쪽 계단"], "type": "stairs", "doorSide": null }
+  ]
+}
