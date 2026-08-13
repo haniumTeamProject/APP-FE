@@ -13,7 +13,7 @@ BLE 비콘을 체크포인트로 삼아 실내 경로를 음성으로 안내하�
 
 | 항목 | 값 |
 | --- | --- |
-| 언어 | Java |
+| 언어 | **Kotlin** (재사용 파일 4개만 Java, 혼용) |
 | minSdk / targetSdk | 26 / 36 |
 | UI | XML View 시스템 (Compose 미사용) |
 | 접근성 | **TalkBack 전제.** 자체 제스처 문법 없음 |
@@ -39,15 +39,17 @@ READY ──더블탭──▶ LISTENING ──매칭성공──▶ ROUTING ─
 
 ```
 app/src/main/java/org/mcsmtp/wayfinder/
-├── MainActivity.java              단일 Activity + Fragment 전환
-├── state/       NavState · NavStateMachine
-├── ui/          Home · Destination · Navigation · Arrival Fragment
-├── ble/         BleScanner(복사) · ScanService(Foreground)
-├── speech/      SttManager · SpeechOutput
-├── net/         ApiClient · WebSocketManager(복사) · model/
-├── mock/        MockApi (assets JSON)
-└── util/        Haptics · ShakeDetector
+├── MainActivity.kt                단일 Activity + Fragment 전환
+├── state/       NavState.kt · NavStateMachine.kt
+├── ui/          Home · Destination · Navigation · Arrival Fragment (.kt)
+├── ble/         BleScanner.java(복사) · ScanService.kt(Foreground)
+├── speech/      SttManager.kt · SpeechOutput.kt
+├── net/         ApiClient.kt · WebSocketManager.java(복사) · model/
+├── mock/        MockApi.kt (assets JSON)
+└── util/        Haptics.kt · ShakeDetector.kt
 ```
+
+`.kt`와 `.java`를 한 모듈에 섞어 둡니다. Kotlin에서 Java 클래스를 그대로 호출할 수 있으므로 복사한 4개는 변환하지 않습니다.
 
 ## 재사용 파일
 
@@ -57,6 +59,8 @@ app/src/main/java/org/mcsmtp/wayfinder/
 - [ ] `WebSocketManager.java` — OkHttp WebSocket
 - [ ] `data/BeaconDevice.java` — 비콘 모델
 - [ ] `data/RssiPoint.java` — RSSI 시계열
+
+**`.java` 확장자 그대로 둡니다.** Kotlin으로 변환하지 마세요 — 이미 검증된 코드이고, 변환 과정에서 버그가 들어갈 수 있습니다.
 
 `RssiFilterPipeline.java`는 **복사하지 않습니다.** 필터링은 서버가 수행합니다.
 
