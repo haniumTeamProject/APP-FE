@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ③ 안내 — 안내 문구는 포커스에서 제외하고 자동 발화만 한다.
+  포커스에 넣으면 TalkBack이 같은 문장을 중복해서 읽는다.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg">
+
+    <TextView
+        android:id="@+id/instruction_text"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="@string/nav_routing"
+        android:textColor="@color/fg"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="24dp"
+        android:importantForAccessibility="no" />
+
+    <TextView
+        android:id="@+id/beacon_debug"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/accent"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:paddingBottom="12dp"
+        android:importantForAccessibility="no" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <Button
+            android:id="@+id/btn_replay"
+            style="@style/SubButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="@string/nav_replay"
+            android:contentDescription="@string/nav_replay_desc" />
+
+        <Button
+            android:id="@+id/btn_stop"
+            style="@style/SubButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="@string/nav_stop"
+            android:contentDescription="@string/nav_stop_desc" />
+    </LinearLayout>
+
+</LinearLayout>

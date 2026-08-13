@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ① 홈 — 포커스 가능한 요소를 버튼 하나로만 둔다.
+  요소가 1개면 화면 어디를 탭해도 그 버튼에 포커스가 가므로,
+  아무 데서나 더블탭으로 실행할 수 있다. 로고나 설명 텍스트를 넣으면 이 동작이 깨진다.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg">
+
+    <TextView
+        android:id="@+id/floor_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/home_floor"
+        android:textColor="@color/fg"
+        android:textSize="22sp"
+        android:gravity="center"
+        android:padding="20dp"
+        android:importantForAccessibility="no" />
+
+    <Button
+        android:id="@+id/btn_speak"
+        style="@style/BigButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="16dp"
+        android:text="@string/home_button"
+        android:textSize="40sp"
+        android:contentDescription="@string/home_button_desc" />
+
+</LinearLayout>

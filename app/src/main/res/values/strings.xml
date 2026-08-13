@@ -1,3 +1,37 @@
 <resources>
-    <string name="app_name">APP-FE</string>
+    <string name="app_name">길안내</string>
+
+    <!-- ① 홈 -->
+    <string name="home_floor">수원대학교 ICT융합대학 4층</string>
+    <string name="home_button">목적지 말하기</string>
+    <string name="home_button_desc">목적지 말하기, 버튼</string>
+    <string name="home_enter">어디로 가시겠어요? 화면을 두 번 두드려 말씀해주세요.</string>
+
+    <!-- ② 목적지 -->
+    <string name="dest_listening">듣고 있어요</string>
+    <string name="dest_recognizing">확인 중이에요</string>
+    <string name="dest_failed">다시 말씀해주세요</string>
+    <string name="dest_failed_speech">찾지 못했습니다. 다시 말씀해주세요.</string>
+    <string name="dest_retry">다시 말하기</string>
+    <string name="dest_retry_desc">다시 말하기, 버튼</string>
+    <string name="dest_pick_title">목록에서 선택</string>
+
+    <!-- ③ 안내 -->
+    <string name="nav_routing">경로를 찾는 중이에요</string>
+    <string name="nav_replay">다시 듣기</string>
+    <string name="nav_replay_desc">다시 듣기, 버튼</string>
+    <string name="nav_stop">안내 중지</string>
+    <string name="nav_stop_desc">안내 중지, 버튼</string>
+    <string name="nav_stop_confirm">안내를 중지할까요?</string>
+    <string name="nav_stop_yes">예</string>
+    <string name="nav_stop_no">계속 안내</string>
+
+    <!-- ④ 도착 -->
+    <string name="arrive_new">새 목적지</string>
+    <string name="arrive_new_desc">새 목적지, 버튼</string>
+    <string name="arrive_end">안내 종료</string>
+    <string name="arrive_end_desc">안내 종료, 버튼</string>
+
+    <!-- 공통 -->
+    <string name="err_route_not_found">경로를 찾을 수 없습니다.</string>
 </resources>
