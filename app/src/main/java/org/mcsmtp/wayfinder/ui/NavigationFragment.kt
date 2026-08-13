@@ -14,6 +14,7 @@ import org.mcsmtp.wayfinder.MainActivity
 import org.mcsmtp.wayfinder.R
 import org.mcsmtp.wayfinder.net.model.NavEvent
 import org.mcsmtp.wayfinder.state.NavState
+import org.mcsmtp.wayfinder.util.ShakeDetector
 
 /**
  * ③ 안내.
@@ -29,6 +30,7 @@ class NavigationFragment : Fragment() {
     private var index = 0
     private var intervalMs = 1000L
 
+    private var shake: ShakeDetector? = null
     private var instructionView: TextView? = null
     private var debugView: TextView? = null
 
@@ -47,6 +49,12 @@ class NavigationFragment : Fragment() {
         val stop = view.findViewById<Button>(R.id.btn_stop)
 
         replay.setOnClickListener { act.speech.replayLast(view) }
+
+        // 흔들기도 [다시 듣기]와 동일하게 동작한다.
+        // 걸으면서 화면을 보지 않고 쓸 수 있는 유일한 입력이다.
+        shake = ShakeDetector(requireContext()).also { d ->
+            d.start { if (isAdded) act.speech.replayLast(view) }
+        }
         stop.setOnClickListener { act.confirmStop() }
 
         act.moveAccessibilityFocus(replay)
@@ -106,6 +114,8 @@ class NavigationFragment : Fragment() {
 
     override fun onDestroyView() {
         handler.removeCallbacksAndMessages(null)
+        shake?.stop()
+        shake = null
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         instructionView = null
         debugView = null
