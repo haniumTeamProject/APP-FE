@@ -7,7 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import org.mcsmtp.wayfinder.MainActivity
@@ -15,13 +16,17 @@ import org.mcsmtp.wayfinder.R
 import org.mcsmtp.wayfinder.net.model.NavEvent
 import org.mcsmtp.wayfinder.state.NavState
 import org.mcsmtp.wayfinder.util.ShakeDetector
+import org.mcsmtp.wayfinder.util.TextFormat
 
 /**
  * ③ 안내.
  *
- * 현재는 assets/mock/navigation_events.json 을 intervalMs 간격으로 재생해
+ * 현재는 assets 의 mock 폴더에 있는 navigation_events.json 을 intervalMs 간격으로 재생해
  * 서버·BLE 없이 안내 흐름 전체를 재현한다.
  * 8단계에서 이 재생 루프를 WebSocket 수신으로 교체한다.
+ *
+ * 화면은 Figma 「09 안내 중」이 기본이고, 위험 신호가 오면 「10 위험 경고」로 바뀐다.
+ * 두 프레임은 같은 화면의 상태 차이라 배경과 아이콘만 갈아끼운다.
  */
 class NavigationFragment : Fragment() {
 
@@ -29,10 +34,14 @@ class NavigationFragment : Fragment() {
     private var events: List<NavEvent> = emptyList()
     private var index = 0
     private var intervalMs = 1000L
+    private var totalSteps = 0
 
     private var shake: ShakeDetector? = null
+    private var navCard: View? = null
+    private var navIcon: ImageView? = null
     private var instructionView: TextView? = null
-    private var debugView: TextView? = null
+    private var progressTitle: TextView? = null
+    private var dots: LinearLayout? = null
 
     override fun onCreateView(i: LayoutInflater, c: ViewGroup?, s: Bundle?): View =
         i.inflate(R.layout.fragment_navigation, c, false)
@@ -43,10 +52,14 @@ class NavigationFragment : Fragment() {
         // 화면이 꺼지면 흔들기·버튼이 동작하지 않는다.
         requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+        navCard = view.findViewById(R.id.nav_card)
+        navIcon = view.findViewById(R.id.nav_icon)
         instructionView = view.findViewById(R.id.instruction_text)
-        debugView = view.findViewById(R.id.beacon_debug)
-        val replay = view.findViewById<Button>(R.id.btn_replay)
-        val stop = view.findViewById<Button>(R.id.btn_stop)
+        progressTitle = view.findViewById(R.id.beacon_debug)
+        dots = view.findViewById(R.id.progress_dots)
+
+        val replay = view.findViewById<View>(R.id.btn_replay)
+        val stop = view.findViewById<View>(R.id.btn_stop)
 
         replay.setOnClickListener { act.speech.replayLast(view) }
 
@@ -80,7 +93,9 @@ class NavigationFragment : Fragment() {
         val payload = runCatching { act.api.navigationEvents() }.getOrNull()
         events = payload?.events ?: emptyList()
         intervalMs = payload?.intervalMs ?: 1000L
+        totalSteps = route.steps.size.takeIf { it > 0 } ?: events.maxOfOrNull { it.currentStep } ?: 0
         index = 0
+        buildDots(totalSteps)
         handler.post(tick)
     }
 
@@ -92,14 +107,20 @@ class NavigationFragment : Fragment() {
             val root = view ?: return
             val e = events[index++]
 
-            debugView?.text = buildString {
-                append(e.currentBeaconId ?: "-")
-                e.nextBeaconId?.let { append(" → ").append(it) }
+            fillDots(e.currentStep)
+            if (totalSteps > 0 && e.currentStep > 0) {
+                progressTitle?.text = getString(R.string.nav_progress, totalSteps, e.currentStep)
             }
 
             // utterance가 null이면 아무 말도 하지 않는다. 발화 억제는 서버가 판단해 내려준다.
+            //
+            // 위험 표시도 여기서만 바꾼다. 매 tick 마다 갱신하면
+            // 다음 이벤트가 1초 뒤에 들어오면서 경고가 곧바로 지워진다.
+            // 화면에 남아 있는 문장과 상자 색이 항상 같은 이벤트를 가리켜야 한다.
             e.utterance?.let {
-                instructionView?.text = it
+                // 화면은 다듬은 문구를, 발화는 원문을 쓴다.
+                instructionView?.text = TextFormat.guidance(it)
+                markDanger(e.haptic == "warn")
                 act.haptics.playByName(e.haptic)
                 act.speech.speak(root, it)
             }
@@ -112,13 +133,50 @@ class NavigationFragment : Fragment() {
         }
     }
 
+    /** 위험 신호가 오면 상자를 분홍으로 바꾼다. 보이는 사용자를 위한 표시다. */
+    private fun markDanger(danger: Boolean) {
+        navCard?.setBackgroundResource(
+            if (danger) R.drawable.bg_hero_danger else R.drawable.bg_hero
+        )
+        navIcon?.setImageResource(
+            if (danger) R.drawable.ic_alert else R.drawable.ic_arrow_right
+        )
+    }
+
+    private fun buildDots(count: Int) {
+        val box = dots ?: return
+        box.removeAllViews()
+        val size = resources.getDimensionPixelSize(R.dimen.dot_size)
+        val gap = resources.getDimensionPixelSize(R.dimen.dot_gap)
+        repeat(count) { i ->
+            val dot = View(requireContext())
+            dot.setBackgroundResource(R.drawable.dot_off)
+            dot.layoutParams = LinearLayout.LayoutParams(size, size).apply {
+                if (i > 0) marginStart = gap
+            }
+            box.addView(dot)
+        }
+    }
+
+    private fun fillDots(currentStep: Int) {
+        val box = dots ?: return
+        for (i in 0 until box.childCount) {
+            box.getChildAt(i).setBackgroundResource(
+                if (i < currentStep) R.drawable.dot_on else R.drawable.dot_off
+            )
+        }
+    }
+
     override fun onDestroyView() {
         handler.removeCallbacksAndMessages(null)
         shake?.stop()
         shake = null
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        navCard = null
+        navIcon = null
         instructionView = null
-        debugView = null
+        progressTitle = null
+        dots = null
         super.onDestroyView()
     }
 }

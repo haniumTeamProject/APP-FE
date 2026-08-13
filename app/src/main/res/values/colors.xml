@@ -1,17 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Figma 「사용자앱 와이어프레임 v1」에서 그대로 옮긴 값이다.
+  임의로 바꾸지 않는다. 색을 고칠 일이 생기면 Figma를 먼저 고치고 여기에 반영한다.
+-->
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <!-- 바탕 -->
+    <color name="screen_bg">#FFFFFFFF</color>
+    <color name="hero_bg">#FFC5EBFF</color>
+    <color name="card_bg">#FFF9F9F9</color>
+    <color name="tile_bg">#FFF1F1F1</color>
+
+    <!-- 주요 행동. 화면당 하나만 쓴다. -->
+    <color name="mint">#FF8CFFB6</color>
+    <color name="on_mint">#FF0D3D22</color>
+
+    <!-- 강조. 방향 아이콘·진행 표시·도착 표시에만 쓴다. -->
+    <color name="blue">#FF346EFF</color>
+
+    <!-- 글자 -->
+    <color name="ink">#FF010101</color>
+    <color name="ink_muted">#FF939598</color>
+
+    <!-- 안내 중 하단 컨트롤 -->
+    <color name="bar_bg">#FF010101</color>
+    <color name="bar_text_off">#FFD5D5D5</color>
+
+    <!-- 진행 표시 -->
+    <color name="dot_off">#FFD9D9D9</color>
+
     <!--
-      저시력 사용자를 위한 고대비 팔레트.
-      시각장애인 다수는 전맹이 아니라 저시력이므로 화면 대비를 최대로 잡는다.
-      검정 배경 + 노랑은 대비비 약 15:1 로 WCAG AAA(7:1)를 크게 넘는다.
+      위험. 계단 경고와 경로 이탈에만 쓴다.
+      권한 거부·연결 실패처럼 급하지 않은 실패에까지 쓰면 이 신호가 무뎌진다.
     -->
-    <color name="bg">#FF000000</color>
-    <color name="fg">#FFFFFFFF</color>
-    <color name="accent">#FFFFD400</color>
-    <color name="accent_text">#FF000000</color>
-    <color name="surface">#FF1C1C1C</color>
-    <color name="danger">#FFFF6B5A</color>
+    <color name="danger_bg">#FFFFCDC5</color>
+    <color name="danger_line">#FFCC2F2F</color>
+
+    <!-- 마이크 후광 -->
+    <color name="glow_core">#701EA858</color>
+    <color name="glow_mid">#1F1EA858</color>
+    <color name="glow_edge">#001EA858</color>
+
+    <!-- 아래는 기존 이름. 새 팔레트를 가리키도록 다시 묶었다. -->
+    <color name="bg">@color/screen_bg</color>
+    <color name="fg">@color/ink</color>
+    <color name="accent">@color/mint</color>
+    <color name="accent_text">@color/ink</color>
+    <color name="surface">@color/card_bg</color>
+    <color name="danger">@color/danger_line</color>
 </resources>

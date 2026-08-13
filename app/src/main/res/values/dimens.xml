@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Figma 프레임은 402pt 폭이다. 안드로이드 dp와 사실상 같은 단위라 숫자를 그대로 쓴다.
+-->
+<resources>
+    <!-- 화면 여백 -->
+    <dimen name="screen_pad_h">20dp</dimen>
+    <dimen name="screen_pad_top">56dp</dimen>
+    <dimen name="screen_pad_bottom">28dp</dimen>
+    <dimen name="screen_gap">12dp</dimen>
+
+    <!-- 모서리. 큰 상자는 아주 둥글게, 작은 타일은 살짝만. 전부 같은 값이면 밋밋해진다. -->
+    <dimen name="radius_hero">30dp</dimen>
+    <dimen name="radius_card">25dp</dimen>
+    <dimen name="radius_tile">11dp</dimen>
+    <dimen name="radius_bar">23dp</dimen>
+    <dimen name="radius_pill">19dp</dimen>
+
+    <!-- 안쪽 여백 -->
+    <dimen name="pad_hero">24dp</dimen>
+    <dimen name="pad_hero_tall">40dp</dimen>
+    <dimen name="pad_hero_mid">32dp</dimen>
+    <dimen name="pad_card">18dp</dimen>
+    <dimen name="pad_tile">16dp</dimen>
+
+    <!-- 간격 -->
+    <dimen name="gap_hero">10dp</dimen>
+    <dimen name="gap_hero_wide">14dp</dimen>
+    <dimen name="gap_text">4dp</dimen>
+    <dimen name="gap_tile">10dp</dimen>
+
+    <!-- 크기 -->
+    <dimen name="tile_height">131dp</dimen>
+    <dimen name="bar_height">56dp</dimen>
+    <dimen name="pill_height">46dp</dimen>
+    <dimen name="mic_size">110dp</dimen>
+    <dimen name="mic_glow_size">210dp</dimen>
+    <dimen name="check_size">64dp</dimen>
+    <dimen name="icon_size">44dp</dimen>
+    <dimen name="avatar_size">42dp</dimen>
+    <dimen name="dot_size">9dp</dimen>
+    <dimen name="dot_gap">8dp</dimen>
+
+    <!-- 글자 -->
+    <dimen name="text_headline">30sp</dimen>
+    <dimen name="text_title">16sp</dimen>
+    <dimen name="text_body">12sp</dimen>
+</resources>

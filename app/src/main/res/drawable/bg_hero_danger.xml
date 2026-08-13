@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 계단 경고·경로 이탈 전용. 안내 화면의 큰 상자를 이걸로 갈아끼운다. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/danger_bg" />
+    <stroke android:width="3dp" android:color="@color/danger_line" />
+    <corners android:radius="@dimen/radius_hero" />
+</shape>

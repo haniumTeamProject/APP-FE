@@ -16,6 +16,12 @@
     <!-- 음성 입력 (SpeechRecognizer) -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <!--
+      진동. 없으면 Vibrator.vibrate 가 SecurityException 을 던져 앱이 죽는다.
+      런타임 요청이 필요 없는 일반 권한이라 선언만 하면 된다.
+    -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <!-- 서버 통신 -->
     <uses-permission android:name="android.permission.INTERNET" />
 

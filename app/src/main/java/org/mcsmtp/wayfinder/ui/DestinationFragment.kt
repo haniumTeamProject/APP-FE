@@ -8,7 +8,6 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -34,7 +33,7 @@ class DestinationFragment : Fragment() {
     private val handler = Handler(Looper.getMainLooper())
 
     private var statusText: TextView? = null
-    private var retryBtn: Button? = null
+    private var retryBtn: View? = null
 
     private var destinations: List<Destination> = emptyList()
 
@@ -57,6 +56,8 @@ class DestinationFragment : Fragment() {
 
         destinations = runCatching { act.api.destinations().destinations }.getOrElse { emptyList() }
         buildList(view.findViewById(R.id.dest_list))
+        view.findViewById<TextView>(R.id.dest_count).text =
+            getString(R.string.dest_pick_count, destinations.size)
 
         retryBtn?.setOnClickListener { ensurePermissionThenListen() }
         act.moveAccessibilityFocus(retryBtn)
@@ -139,25 +140,45 @@ class DestinationFragment : Fragment() {
     }
 
     private fun buildList(container: LinearLayout) {
+        val inflater = LayoutInflater.from(requireContext())
         destinations.forEach { dest ->
-            container.addView(makeButton(dest))
+            container.addView(makeRow(inflater, container, dest))
         }
     }
 
-    private fun makeButton(dest: Destination): Button =
-        Button(requireContext()).apply {
-            text = dest.name
+    /** Figma 「06 목적지 목록」의 행. 제목만 읽히면 되므로 라벨은 행 전체에 건다. */
+    private fun makeRow(inflater: LayoutInflater, parent: LinearLayout, dest: Destination): View =
+        inflater.inflate(R.layout.item_destination, parent, false).apply {
+            findViewById<TextView>(R.id.row_title).text = dest.name
+
+            val sub = findViewById<TextView>(R.id.row_sub)
+            val hint = subtitleOf(dest)
+            if (hint == null) sub.visibility = View.GONE else sub.text = hint
+
             contentDescription = "${dest.name}, 버튼"
-            textSize = 24f
-            setBackgroundResource(R.color.surface)
-            setTextColor(resources.getColor(R.color.fg, null))
-            minHeight = (72 * resources.displayMetrics.density).toInt()
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-            ).apply { bottomMargin = (8 * resources.displayMetrics.density).toInt() }
+            (layoutParams as LinearLayout.LayoutParams).bottomMargin =
+                resources.getDimensionPixelSize(R.dimen.screen_gap)
             setOnClickListener { select(dest) }
         }
+
+    /**
+     * 행의 부연 문구. 목 데이터에 실제로 있는 값만 쓴다.
+     * 거리나 소요 시간은 서버가 경로를 계산해야 나오는 값이라 여기서는 알 수 없다.
+     */
+    private fun subtitleOf(dest: Destination): String? {
+        val side = when (dest.doorSide) {
+            "left" -> "왼쪽"
+            "right" -> "오른쪽"
+            else -> null
+        }
+        val kind = when (dest.type) {
+            "restroom" -> "화장실"
+            "elevator" -> "엘리베이터"
+            "stairs" -> "계단"
+            else -> null
+        }
+        return listOfNotNull(side, kind).takeIf { it.isNotEmpty() }?.joinToString(" · ")
+    }
 
     override fun onDestroyView() {
         handler.removeCallbacksAndMessages(null)

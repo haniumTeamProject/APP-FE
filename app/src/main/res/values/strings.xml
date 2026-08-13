@@ -1,10 +1,19 @@
 <resources>
     <string name="app_name">길안내</string>
+    <string name="brand_mark">WAYFINDER</string>
 
     <!-- ① 홈 -->
+    <string name="home_status">안내 준비됨</string>
+    <string name="home_building">수원대 ICT관</string>
+    <string name="home_floor_short">4층</string>
     <string name="home_floor">수원대학교 ICT융합대학 4층</string>
     <string name="home_button">목적지 말하기</string>
+    <string name="home_button_sub">두 번 두드리세요</string>
     <string name="home_button_desc">목적지 말하기, 버튼</string>
+    <string name="home_list">목적지 목록</string>
+    <string name="home_list_sub">직접 골라서 안내</string>
+    <string name="home_list_desc">목적지 목록, 버튼</string>
+    <string name="home_signal">안내를 시작할 수 있어요</string>
     <string name="home_enter">어디로 가시겠어요? 화면을 두 번 두드려 말씀해주세요.</string>
 
     <!-- ② 목적지 -->
@@ -12,26 +21,39 @@
     <string name="dest_recognizing">확인 중이에요</string>
     <string name="dest_failed">다시 말씀해주세요</string>
     <string name="dest_failed_speech">찾지 못했습니다. 다시 말씀해주세요.</string>
+    <string name="dest_example">“401호로 가줘”</string>
     <string name="dest_retry">다시 말하기</string>
     <string name="dest_retry_desc">다시 말하기, 버튼</string>
-    <string name="dest_pick_title">목록에서 선택</string>
+    <string name="dest_pick_title">목록에서 고르기</string>
+    <string name="dest_pick_sub">목적지를 불러오는 중</string>
+    <string name="dest_pick_count">목적지 %1$d곳</string>
     <string name="dest_mic_denied">마이크 권한이 없어 음성 입력을 쓸 수 없습니다. 아래 목록에서 선택해주세요.</string>
 
     <!-- ③ 안내 -->
-    <string name="nav_routing">경로를 찾는 중이에요</string>
+    <string name="nav_routing">경로를 찾고 있습니다</string>
+    <string name="nav_progress">%1$d개 구간 중 %2$d번째</string>
+    <string name="nav_progress_sub">다음 안내까지 잠시 직진</string>
     <string name="nav_replay">다시 듣기</string>
     <string name="nav_replay_desc">다시 듣기, 버튼</string>
-    <string name="nav_stop">안내 중지</string>
-    <string name="nav_stop_desc">안내 중지, 버튼</string>
-    <string name="nav_stop_confirm">안내를 중지할까요?</string>
-    <string name="nav_stop_yes">예</string>
+    <string name="nav_stop">안내 종료</string>
+    <string name="nav_stop_desc">안내 종료, 버튼</string>
+    <!--
+      "중지"와 "종료"를 나누지 않는다. 이 서비스에는 이탈 회복이 없어서
+      멈추는 것이 곧 끝내는 것이다. 두 단어를 섞어 쓰면 사용자가 되돌릴 수 있다고 오해한다.
+    -->
+    <string name="nav_stop_confirm">안내를 종료할까요?</string>
+    <string name="nav_stop_yes">종료</string>
     <string name="nav_stop_no">계속 안내</string>
 
     <!-- ④ 도착 -->
     <string name="arrive_new">새 목적지</string>
+    <string name="arrive_new_sub">이어서 안내받기</string>
     <string name="arrive_new_desc">새 목적지, 버튼</string>
-    <string name="arrive_end">안내 종료</string>
-    <string name="arrive_end_desc">안내 종료, 버튼</string>
+    <string name="arrive_end">처음으로</string>
+    <string name="arrive_end_sub">안내 끝내기</string>
+    <string name="arrive_end_desc">처음으로, 버튼</string>
+    <string name="arrive_door_left">문은 왼쪽에 있습니다</string>
+    <string name="arrive_door_right">문은 오른쪽에 있습니다</string>
 
     <!-- 공통 -->
     <string name="err_route_not_found">경로를 찾을 수 없습니다.</string>

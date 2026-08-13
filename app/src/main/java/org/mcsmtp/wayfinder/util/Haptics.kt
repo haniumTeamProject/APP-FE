@@ -37,7 +37,9 @@ class Haptics(context: Context) {
             // 목적지 도달
             Pattern.ARRIVE -> VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)
         }
-        v.vibrate(effect)
+        // 진동은 보조 신호다. 실패해도 안내는 계속돼야 한다.
+        // 권한이나 제조사 사정으로 예외가 나도 여기서 삼킨다.
+        runCatching { v.vibrate(effect) }
     }
 
     /** 서버가 내려주는 haptic 문자열을 패턴으로 옮긴다. */

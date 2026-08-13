@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  마이크 원의 후광. Figma 는 초록 그림자를 네 겹 쌓았지만
+  안드로이드 그림자는 색을 못 넣으므로(28 미만) 방사형 그라디언트로 대신한다.
+  확산이 아니라 번짐만 키우는 것이 요령이다. 진한 띠가 생기면 후광이 아니라 그을음으로 보인다.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <gradient
+        android:type="radial"
+        android:centerX="0.5"
+        android:centerY="0.5"
+        android:gradientRadius="105dp"
+        android:startColor="@color/glow_core"
+        android:centerColor="@color/glow_mid"
+        android:endColor="@color/glow_edge" />
+</shape>

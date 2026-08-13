@@ -1,35 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ① 홈 — 포커스 가능한 요소를 버튼 하나로만 둔다.
-  요소가 1개면 화면 어디를 탭해도 그 버튼에 포커스가 가므로,
-  아무 데서나 더블탭으로 실행할 수 있다. 로고나 설명 텍스트를 넣으면 이 동작이 깨진다.
+  ① 홈 — Figma 「02 홈 · READY」
+
+  주의: 기획의 화면 명세는 이 화면에 포커스 요소를 1개만 두라고 정해두었다.
+  시안은 타일 2개(목록·말하기)를 쓰므로 그 규칙과 어긋난다.
+  시안 반영을 우선하기로 한 결정이며, 규칙 쪽을 되살릴 때는 [목적지 목록] 타일을 지우면 된다.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg">
+    android:background="@color/screen_bg"
+    android:paddingStart="@dimen/screen_pad_h"
+    android:paddingEnd="@dimen/screen_pad_h"
+    android:paddingTop="@dimen/screen_pad_top"
+    android:paddingBottom="@dimen/screen_pad_bottom">
 
-    <TextView
-        android:id="@+id/floor_label"
+    <!-- 머리말. 포커스에서 제외한다. 읽어봐야 사용자에게 쓸모가 없다. -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/home_floor"
-        android:textColor="@color/fg"
-        android:textSize="22sp"
-        android:gravity="center"
-        android:padding="20dp"
-        android:importantForAccessibility="no" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:importantForAccessibility="no">
 
-    <Button
-        android:id="@+id/btn_speak"
-        style="@style/BigButton"
+        <View
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:background="@drawable/circle_avatar" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Text.Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/ink"
+                android:text="@string/brand_mark" />
+
+            <TextView
+                style="@style/Text.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/home_status" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 큰 상자 -->
+    <LinearLayout
+        style="@style/Card.Hero"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/screen_gap">
+
+        <TextView
+            android:id="@+id/floor_building"
+            style="@style/Text.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/home_building"
+            android:importantForAccessibility="no" />
+
+        <TextView
+            android:id="@+id/floor_level"
+            style="@style/Text.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_hero"
+            android:text="@string/home_floor_short"
+            android:importantForAccessibility="no" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/tile_height"
+            android:layout_marginTop="@dimen/gap_hero"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/btn_list"
+                style="@style/Tile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tile_gray"
+                android:contentDescription="@string/home_list_desc">
+
+                <TextView
+                    style="@style/Text.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_list"
+                    android:importantForAccessibility="no" />
+
+                <TextView
+                    style="@style/Text.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/gap_text"
+                    android:text="@string/home_list_sub"
+                    android:importantForAccessibility="no" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btn_speak"
+                style="@style/Tile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/gap_tile"
+                android:background="@drawable/bg_tile_mint"
+                android:contentDescription="@string/home_button_desc">
+
+                <TextView
+                    style="@style/Text.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_button"
+                    android:importantForAccessibility="no" />
+
+                <TextView
+                    style="@style/Text.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/gap_text"
+                    android:textColor="@color/on_mint"
+                    android:text="@string/home_button_sub"
+                    android:importantForAccessibility="no" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Card.Sub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/screen_gap"
+        android:importantForAccessibility="no">
+
+        <TextView
+            android:id="@+id/signal_text"
+            style="@style/Text.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/home_signal" />
+    </LinearLayout>
+
+    <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_margin="16dp"
-        android:text="@string/home_button"
-        android:textSize="40sp"
-        android:contentDescription="@string/home_button_desc" />
+        android:layout_weight="1" />
 
 </LinearLayout>

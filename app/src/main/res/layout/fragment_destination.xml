@@ -1,56 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ② 목적지 — STT 연동 전까지는 하단 목록으로 선택할 수 있게 둔다. -->
+<!--
+  ② 목적지 — Figma 「03 목적지 · LISTENING」 + 「06 목적지 목록 · FALLBACK」
+
+  시안은 두 프레임으로 나뉘어 있지만 앱에서는 한 화면이다.
+  음성이 세 번 실패하면 목록으로 포커스를 옮기는 흐름이라, 목록이 같은 화면에 있어야
+  포커스만 이동시키면 된다. 화면을 갈아끼우면 그 사이 발화가 끊긴다.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg">
+    android:background="@color/screen_bg"
+    android:paddingStart="@dimen/screen_pad_h"
+    android:paddingEnd="@dimen/screen_pad_h"
+    android:paddingTop="@dimen/screen_pad_top"
+    android:paddingBottom="@dimen/screen_pad_bottom">
 
-    <TextView
-        android:id="@+id/status_text"
+    <LinearLayout
+        style="@style/Card.Hero"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dest_listening"
-        android:textColor="@color/accent"
-        android:textSize="40sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:padding="28dp"
-        android:importantForAccessibility="no" />
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/pad_hero_tall"
+        android:paddingBottom="@dimen/pad_hero_tall"
+        android:importantForAccessibility="no">
 
-    <Button
+        <!--
+          마이크 원. 후광은 원보다 큰 판을 뒤에 깔아 만든다.
+          FrameLayout 크기를 후광에 맞춰야 잘리지 않는다.
+        -->
+        <FrameLayout
+            android:layout_width="@dimen/mic_glow_size"
+            android:layout_height="@dimen/mic_glow_size"
+            android:background="@drawable/mic_glow">
+
+            <FrameLayout
+                android:id="@+id/mic_circle"
+                android:layout_width="@dimen/mic_size"
+                android:layout_height="@dimen/mic_size"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_mint">
+
+                <ImageView
+                    android:layout_width="37dp"
+                    android:layout_height="37dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_mic"
+                    android:contentDescription="@null" />
+            </FrameLayout>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/status_text"
+            style="@style/Text.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_hero"
+            android:text="@string/dest_listening" />
+
+        <TextView
+            android:id="@+id/status_hint"
+            style="@style/Text.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_hero"
+            android:text="@string/dest_example" />
+    </LinearLayout>
+
+    <!-- 실패했을 때만 나타난다. 나타나면 포커스가 이리로 온다. -->
+    <LinearLayout
         android:id="@+id/btn_retry"
-        style="@style/SubButton"
+        style="@style/Tile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/dest_retry"
+        android:layout_marginTop="@dimen/screen_gap"
+        android:background="@drawable/bg_tile_mint"
         android:contentDescription="@string/dest_retry_desc"
-        android:visibility="gone" />
+        android:visibility="gone">
 
-    <TextView
+        <TextView
+            style="@style/Text.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dest_retry"
+            android:importantForAccessibility="no" />
+
+        <TextView
+            style="@style/Text.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_text"
+            android:textColor="@color/on_mint"
+            android:text="@string/home_button_sub"
+            android:importantForAccessibility="no" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Card.Sub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dest_pick_title"
-        android:textColor="@color/fg"
-        android:textSize="20sp"
-        android:padding="16dp"
-        android:importantForAccessibility="no" />
+        android:layout_marginTop="@dimen/screen_gap"
+        android:importantForAccessibility="no">
+
+        <TextView
+            style="@style/Text.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dest_pick_title" />
+
+        <TextView
+            android:id="@+id/dest_count"
+            style="@style/Text.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_text"
+            android:text="@string/dest_pick_sub" />
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/screen_gap"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:id="@+id/dest_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="16dp" />
+            android:orientation="vertical" />
     </ScrollView>
 
 </LinearLayout>

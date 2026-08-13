@@ -1,7 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.APPFE" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <!--
+      시안이 라이트 전용이므로 야간에도 같은 테마를 쓴다.
+      비워두면 Material 이 야간 색으로 갈아끼워 흰 카드 위 흰 글씨가 나온다.
+    -->
+    <style name="Base.Theme.APPFE" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:windowBackground">@color/screen_bg</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="colorPrimary">@color/blue</item>
     </style>
 </resources>

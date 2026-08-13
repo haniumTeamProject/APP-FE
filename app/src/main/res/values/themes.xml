@@ -1,31 +1,76 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Base.Theme.APPFE" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/bg</item>
-        <item name="android:textColor">@color/fg</item>
-        <item name="colorPrimary">@color/accent</item>
+    <!--
+      Figma 시안은 라이트 전용이다. DayNight 를 쓰면 Material 이 색을 뒤집어
+      흰 카드 위에 흰 글씨가 나오는 일이 생기므로 Light 로 고정한다.
+      다크 모드는 별도 팔레트를 만들어 붙이기로 하고 지금은 열지 않는다.
+    -->
+    <style name="Base.Theme.APPFE" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:windowBackground">@color/screen_bg</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="colorPrimary">@color/blue</item>
     </style>
 
     <style name="Theme.APPFE" parent="Base.Theme.APPFE" />
 
     <!--
-      큰 버튼. 최소 높이를 화면 1/3 수준으로 잡아 조준 없이 누를 수 있게 한다.
-      실제 비율은 각 레이아웃의 layout_weight 로 정한다.
+      Figma 와 같은 글자를 쓴다. 30sp 제목은 Ria Sans, 16sp·12sp 는 Gothic A1.
+
+      굵기를 font-family 묶음으로 고르지 않고 ttf 를 직접 가리킨다.
+      묶음에서 굵기를 지정하는 android:textFontWeight 는 API 28 부터인데 minSdk 가 26 이라,
+      묶음을 쓰면 어느 기기에서는 400 으로 떨어져 제목이 얇아진다.
+
+      큰 글씨는 Regular, 작은 글씨는 SemiBold 다. 뒤집어 쓰면 시안의 인상이 무너진다.
+      ria_sans_bold 는 아직 안 쓴다. 온보딩 화면(Figma 01)을 만들 때 쓸 자리다.
     -->
-    <style name="BigButton">
-        <item name="android:background">@color/accent</item>
-        <item name="android:textColor">@color/accent_text</item>
-        <item name="android:textSize">30sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:minHeight">96dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:padding">16dp</item>
+    <!-- 점이 들어간 이름은 앞부분을 부모로 찾으므로 빈 뿌리를 둔다. -->
+    <style name="Text" />
+
+    <style name="Card" />
+
+    <style name="Text.Headline">
+        <item name="android:fontFamily">@font/ria_sans_regular</item>
+        <item name="android:textSize">@dimen/text_headline</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 
-    <style name="SubButton" parent="BigButton">
-        <item name="android:background">@color/surface</item>
-        <item name="android:textColor">@color/fg</item>
-        <item name="android:textSize">26sp</item>
+    <style name="Text.Title">
+        <item name="android:fontFamily">@font/gothic_a1_semibold</item>
+        <item name="android:textSize">@dimen/text_title</item>
+        <item name="android:textColor">@color/ink</item>
+    </style>
+
+    <style name="Text.Body">
+        <item name="android:fontFamily">@font/gothic_a1_regular</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textColor">@color/ink_muted</item>
+    </style>
+
+    <!-- 큰 상자. 층 안내·안내 문구·도착 문구가 들어간다. -->
+    <style name="Card.Hero">
+        <item name="android:background">@drawable/bg_hero</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">@dimen/pad_hero</item>
+    </style>
+
+    <!-- 보조 상자. 부연 정보와 힌트가 들어간다. -->
+    <style name="Card.Sub">
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">@dimen/pad_card</item>
+    </style>
+
+    <!--
+      행동 타일. 글자를 아래로 붙이는 것이 이 디자인의 규칙이다.
+      위쪽 빈 공간이 아이콘 자리이자 여백 역할을 한다.
+    -->
+    <style name="Tile">
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">bottom</item>
+        <item name="android:padding">@dimen/pad_tile</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
     </style>
 
 </resources>

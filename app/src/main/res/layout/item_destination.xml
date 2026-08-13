@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma 「06 목적지 목록」의 행. row/list 컴포넌트와 같은 값이다. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_card"
+    android:padding="@dimen/pad_card"
+    android:focusable="true"
+    android:clickable="true">
+
+    <TextView
+        android:id="@+id/row_title"
+        style="@style/Text.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="no" />
+
+    <TextView
+        android:id="@+id/row_sub"
+        style="@style/Text.Body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_text"
+        android:importantForAccessibility="no" />
+
+</LinearLayout>
