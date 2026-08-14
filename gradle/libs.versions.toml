@@ -1,5 +1,12 @@
 [versions]
-agp = "9.3.1"
+# AGP 8.13.0 은 최신 안정판이라 대부분의 Android Studio 가 연다.
+# 9.x 는 프리뷰라 최신 스튜디오에서만 열려서 팀 공유가 안 된다.
+# 세트 제약: Gradle 8.13 · JDK 17 · compileSdk 36 · Build Tools 35+.
+agp = "8.13.0"
+# AGP 8.x 는 Kotlin 을 내장하지 않으므로 플러그인을 직접 건다.
+# 의존성이 kotlin-stdlib 2.2.x 를 끌어오므로 컴파일러도 같은 계열로 맞춘다.
+# 낮추면 "incompatible metadata version" 으로 컴파일이 깨진다. AGP 8.13 은 Kotlin 2.3 까지 지원.
+kotlin = "2.2.21"
 coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -28,4 +35,5 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 

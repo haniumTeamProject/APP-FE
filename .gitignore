@@ -16,3 +16,4 @@ local.properties
 
 # IDE (전체 무시)
 /.idea/
+.kotlin/
