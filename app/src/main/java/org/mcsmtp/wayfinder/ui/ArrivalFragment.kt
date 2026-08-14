@@ -44,6 +44,15 @@ class ArrivalFragment : Fragment() {
 
         act.haptics.play(Haptics.Pattern.ARRIVE)
 
+        // 도착 안내는 이 화면이 맡는다. 재생 루프가 아니라 여기서 말해야
+        // 화면과 발화가 함께 나온다. [다시 듣기]가 재생할 마지막 문장도 이걸로 잡힌다.
+        val arriveMsg = buildString {
+            append(dest?.name ?: "")
+            append("에 도착했습니다.")
+            door?.let { append(" ").append(it) }
+        }
+        act.speech.speak(view, arriveMsg)
+
         // [새 목적지]는 홈으로 돌아가되 곧바로 음성 입력을 시작해 한 단계를 줄인다.
         newDest.setOnClickListener {
             act.destination = null

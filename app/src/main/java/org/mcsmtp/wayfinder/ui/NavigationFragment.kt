@@ -81,7 +81,7 @@ class NavigationFragment : Fragment() {
     }
 
     private fun startNavigation(act: MainActivity, root: View) {
-        val route = runCatching { act.api.route() }.getOrNull()
+        val route = runCatching { act.api.route(act.destination) }.getOrNull()
         if (route == null) {
             act.speech.speak(root, getString(R.string.err_route_not_found))
             act.machine.reset()
@@ -90,7 +90,7 @@ class NavigationFragment : Fragment() {
         act.route = route
         act.machine.transition(NavState.NAVIGATING)
 
-        val payload = runCatching { act.api.navigationEvents() }.getOrNull()
+        val payload = runCatching { act.api.navigationEvents(act.destination) }.getOrNull()
         events = payload?.events ?: emptyList()
         intervalMs = payload?.intervalMs ?: 1000L
         totalSteps = route.steps.size.takeIf { it > 0 } ?: events.maxOfOrNull { it.currentStep } ?: 0
@@ -106,6 +106,14 @@ class NavigationFragment : Fragment() {
             val act = requireActivity() as MainActivity
             val root = view ?: return
             val e = events[index++]
+
+            // 도착은 발화하지 않고 화면만 넘긴다. 도착 안내는 도착 화면이 맡아
+            // 화면과 발화가 함께 나오게 한다. 여기서 발화하면 소리가 끝나기 전에
+            // 화면이 먼저 넘어가 "말은 아직인데 화면이 바뀐" 상태가 된다.
+            if (e.event == "arrive") {
+                act.machine.transition(NavState.ARRIVED)
+                return
+            }
 
             fillDots(e.currentStep)
             if (totalSteps > 0 && e.currentStep > 0) {
@@ -125,10 +133,6 @@ class NavigationFragment : Fragment() {
                 act.speech.speak(root, it)
             }
 
-            if (e.event == "arrive") {
-                act.machine.transition(NavState.ARRIVED)
-                return
-            }
             handler.postDelayed(this, intervalMs)
         }
     }

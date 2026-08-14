@@ -31,6 +31,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         list.setOnClickListener(toDestination)
 
         act.moveAccessibilityFocus(speak)
-        act.speech.speak(view, getString(R.string.home_enter))
+        // 현재 건물·층을 먼저 알린다. 1차는 고정값이지만, 사용자가 위치를 확인할 유일한 창구다.
+        act.speech.speak(
+            view,
+            getString(
+                R.string.home_enter,
+                getString(R.string.home_building),
+                getString(R.string.home_floor_short),
+            ),
+        )
     }
 }
