@@ -25,7 +25,8 @@ class NavStateMachine {
      */
     private val allowed: Map<NavState, Set<NavState>> = mapOf(
         NavState.SELECTING_PLACE to setOf(NavState.READY),
-        NavState.READY to setOf(NavState.LISTENING),
+        // 홈에서 건물·층을 다시 고르러 진입 화면으로 돌아갈 수 있다.
+        NavState.READY to setOf(NavState.LISTENING, NavState.SELECTING_PLACE),
         NavState.LISTENING to setOf(NavState.ROUTING, NavState.READY),
         NavState.ROUTING to setOf(NavState.NAVIGATING, NavState.READY),
         NavState.NAVIGATING to setOf(NavState.ARRIVED, NavState.READY),

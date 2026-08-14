@@ -135,19 +135,31 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- 건물·층 바꾸기. 자동 인식이 없는 1차에서 위치가 틀렸을 때 되고를 유일한 창구다. -->
     <LinearLayout
+        android:id="@+id/btn_change_place"
         style="@style/Card.Sub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/screen_gap"
-        android:importantForAccessibility="no">
+        android:focusable="true"
+        android:clickable="true"
+        android:contentDescription="@string/home_change_place_desc">
 
         <TextView
-            android:id="@+id/signal_text"
             style="@style/Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/home_signal" />
+            android:text="@string/home_change_place"
+            android:importantForAccessibility="no" />
+
+        <TextView
+            android:id="@+id/change_place_current"
+            style="@style/Text.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_text"
+            android:importantForAccessibility="no" />
     </LinearLayout>
 
     <View

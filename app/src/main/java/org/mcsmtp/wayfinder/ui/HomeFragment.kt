@@ -37,6 +37,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         speak.setOnClickListener(toDestination)
         list.setOnClickListener(toDestination)
 
+        // 건물·층 바꾸기 — 지금 위치를 함께 보여주고, 누르면 진입 화면으로 돌아간다.
+        view.findViewById<TextView>(R.id.change_place_current).text =
+            getString(R.string.home_change_place_current, building, floor)
+        view.findViewById<View>(R.id.btn_change_place).setOnClickListener {
+            act.machine.transition(NavState.SELECTING_PLACE)
+        }
+
         act.moveAccessibilityFocus(speak)
         // 현재 건물·층을 먼저 알린다. 사용자가 위치를 확인할 유일한 창구다.
         act.speech.speak(view, getString(R.string.home_enter, building, floor))

@@ -20,6 +20,9 @@
     <string name="home_list_sub">직접 골라서 안내</string>
     <string name="home_list_desc">목적지 목록, 버튼</string>
     <string name="home_signal">안내를 시작할 수 있어요</string>
+    <string name="home_change_place">건물·층 바꾸기</string>
+    <string name="home_change_place_desc">건물·층 바꾸기, 버튼</string>
+    <string name="home_change_place_current">지금 %1$s %2$s</string>
     <!--
       진입 안내에 현재 건물·층을 먼저 넣는다. 화면을 못 보는 사용자는
       앱이 어디로 인식했는지 들어야 신뢰하고, 틀렸을 때 알아챌 수 있다.
