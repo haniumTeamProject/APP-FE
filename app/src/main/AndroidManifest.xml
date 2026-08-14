@@ -51,9 +51,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.APPFE">
+        <!--
+          세로 고정 + config 변경 자체 처리.
+
+          회전·다크모드·글씨크기 변경은 기본적으로 Activity 를 재생성하는데,
+          그러면 선택한 건물·층·목적지·경로가 전부 초기화되고 복원된 화면과 어긋난다.
+          이 앱은 시각장애인이 걸으며 쓰는 세로 전용이라 가로가 필요 없으므로,
+          세로로 잠그고 config 변경은 재생성 없이 넘긴다(상태 유지).
+        -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden|uiMode|fontScale|density|locale|layoutDirection"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
