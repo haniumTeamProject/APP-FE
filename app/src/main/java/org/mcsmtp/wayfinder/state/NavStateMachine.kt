@@ -14,7 +14,7 @@ class NavStateMachine {
         fun onStateChanged(from: NavState, to: NavState)
     }
 
-    var current: NavState = NavState.READY
+    var current: NavState = NavState.SELECTING_PLACE
         private set
 
     private val listeners = mutableListOf<Listener>()
@@ -24,6 +24,7 @@ class NavStateMachine {
      * 어느 상태에서든 READY로 돌아갈 수 있어야 한다 — 취소·중지·종료가 모두 홈으로 모인다.
      */
     private val allowed: Map<NavState, Set<NavState>> = mapOf(
+        NavState.SELECTING_PLACE to setOf(NavState.READY),
         NavState.READY to setOf(NavState.LISTENING),
         NavState.LISTENING to setOf(NavState.ROUTING, NavState.READY),
         NavState.ROUTING to setOf(NavState.NAVIGATING, NavState.READY),

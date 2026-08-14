@@ -1,0 +1,11 @@
+{
+  "floorId": "library_1",
+  "floorName": "도서관 1층",
+  "destinations": [
+    { "id": "lm_lobby", "name": "1층 로비", "aliases": ["로비", "입구"], "type": "facility", "doorSide": null },
+    { "id": "lm_return", "name": "반납기", "aliases": ["반납기", "반납"], "type": "facility", "doorSide": "right" },
+    { "id": "lm_reading", "name": "열람실", "aliases": ["열람실", "열람"], "type": "facility", "doorSide": "left" },
+    { "id": "lm_wc1", "name": "1층 화장실", "aliases": ["화장실"], "type": "restroom", "doorSide": "left" },
+    { "id": "lm_elv1", "name": "엘리베이터", "aliases": ["엘리베이터", "엘베", "승강기"], "type": "elevator", "doorSide": null }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "floorId": "future_1",
+  "floorName": "미래혁신관 1층",
+  "destinations": [
+    { "id": "lm_lobby", "name": "1층 로비", "aliases": ["로비", "입구"], "type": "facility", "doorSide": null },
+    { "id": "lm_cafe", "name": "카페", "aliases": ["카페", "매점"], "type": "facility", "doorSide": "left" },
+    { "id": "lm_hall", "name": "대강당", "aliases": ["강당", "대강당", "홀"], "type": "facility", "doorSide": "right" },
+    { "id": "lm_wc1", "name": "1층 화장실", "aliases": ["화장실"], "type": "restroom", "doorSide": "right" },
+    { "id": "lm_elv1", "name": "엘리베이터", "aliases": ["엘리베이터", "엘베", "승강기"], "type": "elevator", "doorSide": null }
+  ]
+}

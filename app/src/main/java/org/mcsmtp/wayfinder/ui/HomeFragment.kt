@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import org.mcsmtp.wayfinder.MainActivity
 import org.mcsmtp.wayfinder.R
@@ -26,19 +27,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val speak = view.findViewById<View>(R.id.btn_speak)
         val list = view.findViewById<View>(R.id.btn_list)
 
+        // 선택한 건물·층을 화면에 반영한다. 하드코딩하지 않는다 — 여러 건물에 쓰이는 서비스다.
+        val building = act.selectedBuilding?.name ?: getString(R.string.home_building)
+        val floor = act.selectedFloor?.name ?: getString(R.string.home_floor_short)
+        view.findViewById<TextView>(R.id.floor_building).text = building
+        view.findViewById<TextView>(R.id.floor_level).text = floor
+
         val toDestination = View.OnClickListener { act.machine.transition(NavState.LISTENING) }
         speak.setOnClickListener(toDestination)
         list.setOnClickListener(toDestination)
 
         act.moveAccessibilityFocus(speak)
-        // 현재 건물·층을 먼저 알린다. 1차는 고정값이지만, 사용자가 위치를 확인할 유일한 창구다.
-        act.speech.speak(
-            view,
-            getString(
-                R.string.home_enter,
-                getString(R.string.home_building),
-                getString(R.string.home_floor_short),
-            ),
-        )
+        // 현재 건물·층을 먼저 알린다. 사용자가 위치를 확인할 유일한 창구다.
+        act.speech.speak(view, getString(R.string.home_enter, building, floor))
     }
 }

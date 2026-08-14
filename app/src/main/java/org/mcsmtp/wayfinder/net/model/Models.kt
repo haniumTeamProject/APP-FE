@@ -2,6 +2,30 @@ package org.mcsmtp.wayfinder.net.model
 
 import com.google.gson.annotations.SerializedName
 
+// ─── GET /api/buildings ───────────────────────────────────────────────
+
+/**
+ * 건물·층 목록. 이 서비스는 수원대 ICT관 한 곳이 아니라 여러 건물을 다룬다.
+ * 1차는 사용자가 직접 건물·층을 고르고, 2차에서 BLE major(=100+층)로 자동 인식한다.
+ */
+data class BuildingResponse(
+    val buildings: List<Building> = emptyList(),
+)
+
+data class Building(
+    val id: String,
+    val name: String,
+    val floors: List<Floor> = emptyList(),
+)
+
+data class Floor(
+    val id: String,          // floorId — 목적지·경로 요청의 키
+    val floor: Int,          // 층 번호
+    val name: String,        // "4층"
+    val major: Int? = null,  // 100 + 층. 2차 자동 인식에 쓴다
+    val destinationCount: Int = 0,
+)
+
 // ─── GET /api/floors/{floorId}/destinations ───────────────────────────
 
 data class DestinationResponse(

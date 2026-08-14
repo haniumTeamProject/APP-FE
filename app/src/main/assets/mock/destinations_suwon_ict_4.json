@@ -1,6 +1,6 @@
 {
-  "floorId": "suwon_ict-4",
-  "floorName": "수원대학교 ICT융합대학 4층",
+  "floorId": "suwon_ict_4",
+  "floorName": "수원대 ICT관 4층",
   "destinations": [
     { "id": "lm_401", "name": "401호", "aliases": ["401", "사백일", "401호실", "사백일호"], "type": "room", "doorSide": "right" },
     { "id": "lm_402", "name": "402호", "aliases": ["402", "사백이", "402호실", "사백이호"], "type": "room", "doorSide": "right" },

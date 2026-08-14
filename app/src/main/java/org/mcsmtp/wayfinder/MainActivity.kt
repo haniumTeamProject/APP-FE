@@ -12,7 +12,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import org.mcsmtp.wayfinder.mock.MockApi
+import org.mcsmtp.wayfinder.net.model.Building
 import org.mcsmtp.wayfinder.net.model.Destination
+import org.mcsmtp.wayfinder.net.model.Floor
 import org.mcsmtp.wayfinder.net.model.Route
 import org.mcsmtp.wayfinder.speech.SpeechOutput
 import org.mcsmtp.wayfinder.state.NavState
@@ -21,6 +23,7 @@ import org.mcsmtp.wayfinder.ui.ArrivalFragment
 import org.mcsmtp.wayfinder.ui.DestinationFragment
 import org.mcsmtp.wayfinder.ui.HomeFragment
 import org.mcsmtp.wayfinder.ui.NavigationFragment
+import org.mcsmtp.wayfinder.ui.PlaceFragment
 import org.mcsmtp.wayfinder.util.Haptics
 
 /**
@@ -33,6 +36,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var speech: SpeechOutput; private set
     lateinit var haptics: Haptics; private set
     lateinit var api: MockApi; private set
+
+    /** 선택된 건물·층. 진입 시 [PlaceFragment]에서 고른다. Fragment 간 공유 상태. */
+    var selectedBuilding: Building? = null
+    var selectedFloor: Floor? = null
 
     /** 선택된 목적지와 계산된 경로. Fragment 간 공유 상태. */
     var destination: Destination? = null
@@ -61,13 +68,14 @@ class MainActivity : AppCompatActivity() {
             override fun handleOnBackPressed() {
                 when (machine.current) {
                     NavState.NAVIGATING -> confirmStop()
-                    NavState.READY -> finish()
+                    // 진입 화면과 홈에서 뒤로가기는 앱을 닫는다. 그 위로 갈 곳이 없다.
+                    NavState.SELECTING_PLACE, NavState.READY -> finish()
                     else -> machine.reset()
                 }
             }
         })
 
-        if (savedInstanceState == null) render(NavState.READY)
+        if (savedInstanceState == null) render(NavState.SELECTING_PLACE)
     }
 
     override fun onResume() {
@@ -84,6 +92,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun render(state: NavState) {
         val fragment: Fragment = when (state) {
+            NavState.SELECTING_PLACE -> PlaceFragment()
             NavState.READY -> HomeFragment()
             NavState.LISTENING -> DestinationFragment()
             NavState.ROUTING, NavState.NAVIGATING -> NavigationFragment()

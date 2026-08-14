@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  건물·층 선택 — 앱 진입점 (Figma 「19 건물·층 선택」)
+
+  1차는 자동 인식이 없으므로 사용자가 직접 고른다. 화면을 못 보는 사용자를 위해
+  목록 첫 항목에 포커스를 강제로 옮기고, 진입 안내를 발화한다.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/screen_bg"
+    android:paddingStart="@dimen/screen_pad_h"
+    android:paddingEnd="@dimen/screen_pad_h"
+    android:paddingTop="@dimen/screen_pad_top"
+    android:paddingBottom="@dimen/screen_pad_bottom">
+
+    <LinearLayout
+        style="@style/Card.Hero"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="no">
+
+        <TextView
+            style="@style/Text.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/place_title" />
+
+        <TextView
+            style="@style/Text.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_hero"
+            android:text="@string/place_sub" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/screen_gap"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:id="@+id/place_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+</LinearLayout>

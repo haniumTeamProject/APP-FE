@@ -2,6 +2,7 @@ package org.mcsmtp.wayfinder.mock
 
 import android.content.Context
 import com.google.gson.Gson
+import org.mcsmtp.wayfinder.net.model.BuildingResponse
 import org.mcsmtp.wayfinder.net.model.Destination
 import org.mcsmtp.wayfinder.net.model.DestinationResponse
 import org.mcsmtp.wayfinder.net.model.NavEventList
@@ -20,8 +21,16 @@ class MockApi(private val context: Context) {
     private fun readAsset(name: String): String =
         context.assets.open("mock/$name").bufferedReader().use { it.readText() }
 
-    fun destinations(): DestinationResponse =
-        gson.fromJson(readAsset("destinations.json"), DestinationResponse::class.java)
+    /** GET /api/buildings — 건물·층 목록. */
+    fun buildings(): BuildingResponse =
+        gson.fromJson(readAsset("buildings.json"), BuildingResponse::class.java)
+
+    /**
+     * GET /api/floors/{floorId}/destinations.
+     * 층마다 파일이 하나씩 있다. 실제 서버가 붙으면 floorId 로 요청만 바꾸면 된다.
+     */
+    fun destinations(floorId: String): DestinationResponse =
+        gson.fromJson(readAsset("destinations_$floorId.json"), DestinationResponse::class.java)
 
     /**
      * 실제 서버는 목적지마다 다른 경로를 계산해 준다.

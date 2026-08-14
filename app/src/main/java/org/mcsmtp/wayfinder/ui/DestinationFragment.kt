@@ -70,7 +70,10 @@ class DestinationFragment : Fragment() {
 
         stt = SttManager(requireContext())
 
-        destinations = runCatching { act.api.destinations().destinations }.getOrElse { emptyList() }
+        val floorId = act.selectedFloor?.id
+        destinations = runCatching {
+            if (floorId != null) act.api.destinations(floorId).destinations else emptyList()
+        }.getOrElse { emptyList() }
         buildList(listContainer!!)
         view.findViewById<TextView>(R.id.dest_count).text =
             getString(R.string.dest_pick_count, destinations.size)

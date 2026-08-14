@@ -1,0 +1,12 @@
+{
+  "floorId": "suwon_ict_1",
+  "floorName": "수원대 ICT관 1층",
+  "destinations": [
+    { "id": "lm_lobby", "name": "1층 로비", "aliases": ["로비", "일층 로비", "입구"], "type": "facility", "doorSide": null },
+    { "id": "lm_info", "name": "안내데스크", "aliases": ["안내", "안내데스크", "데스크"], "type": "facility", "doorSide": "right" },
+    { "id": "lm_101", "name": "101호", "aliases": ["101", "백일", "101호실"], "type": "room", "doorSide": "right" },
+    { "id": "lm_wc1", "name": "1층 화장실", "aliases": ["화장실", "일층 화장실"], "type": "restroom", "doorSide": "left" },
+    { "id": "lm_elv1", "name": "엘리베이터", "aliases": ["엘리베이터", "엘베", "승강기"], "type": "elevator", "doorSide": null },
+    { "id": "lm_st1", "name": "중앙 계단", "aliases": ["계단", "중앙 계단"], "type": "stairs", "doorSide": null }
+  ]
+}

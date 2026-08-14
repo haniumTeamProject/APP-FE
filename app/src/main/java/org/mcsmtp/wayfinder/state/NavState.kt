@@ -4,10 +4,16 @@ package org.mcsmtp.wayfinder.state
  * 앱의 상태. 이 앱은 화면이 아니라 상태로 설계한다.
  * 사용자가 화면을 보지 않으므로 "지금 어떤 상태이고 그것을 어떻게 알리나"가 설계의 본체다.
  *
- * 1차 개발 범위는 아래 5개다.
+ * 1차 개발 범위는 아래 6개다.
  * 2차: DEVIATED · SIGNAL_LOST · LOCATION_UNKNOWN · DISAMBIGUATE · CONFIRM
  */
 enum class NavState {
+    /**
+     * 건물·층 선택 — 앱 진입점.
+     * 1차는 사용자가 직접 고른다. 2차에서 BLE major 로 자동 인식되면 이 화면을 건너뛴다.
+     */
+    SELECTING_PLACE,
+
     /** 대기 — "어디로 가시겠어요?" */
     READY,
 
