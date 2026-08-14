@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/pad_hero_tall"
         android:paddingBottom="@dimen/pad_hero_tall"
-        android:importantForAccessibility="no">
+        android:importantForAccessibility="noHideDescendants">
 
         <FrameLayout
             android:layout_width="@dimen/check_size"

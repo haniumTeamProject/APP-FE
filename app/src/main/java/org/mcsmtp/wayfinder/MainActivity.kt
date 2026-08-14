@@ -3,6 +3,7 @@ package org.mcsmtp.wayfinder
 import android.content.Context
 import android.os.Bundle
 import android.view.accessibility.AccessibilityManager
+import android.view.accessibility.AccessibilityNodeInfo
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
@@ -132,13 +133,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * 화면 전환 후 TalkBack 포커스를 첫 요소로 강제 이동한다.
+     * 화면 전환 후 TalkBack 포커스(초록 테두리)를 첫 요소로 강제 이동한다.
      * 하지 않으면 포커스가 유실되어 사용자가 "먹통"으로 느낀다. 가장 흔한 접근성 버그다.
+     *
+     * TYPE_VIEW_FOCUSED(입력 포커스)로는 TalkBack 포커스가 안 옮겨진다.
+     * ACTION_ACCESSIBILITY_FOCUS 로 접근성 포커스를 직접 건다.
+     * 화면 진입 직후엔 TalkBack이 자기 기본 포커스를 잡느라 덮어쓰므로 살짝 늦춰 건다.
      */
     fun moveAccessibilityFocus(view: View?) {
-        view?.post {
-            view.requestFocus()
-            view.sendAccessibilityEvent(android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED)
-        }
+        view ?: return
+        view.postDelayed({
+            view.performAccessibilityAction(
+                AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS,
+                null,
+            )
+        }, 300)
     }
 }

@@ -23,7 +23,7 @@
         android:gravity="center_horizontal"
         android:paddingTop="@dimen/pad_hero_tall"
         android:paddingBottom="@dimen/pad_hero_tall"
-        android:importantForAccessibility="no">
+        android:importantForAccessibility="noHideDescendants">
 
         <!--
           마이크 원. 후광은 원보다 큰 판을 뒤에 깔아 만든다.
@@ -100,7 +100,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/screen_gap"
-        android:importantForAccessibility="no">
+        android:importantForAccessibility="noHideDescendants">
 
         <TextView
             style="@style/Text.Title"

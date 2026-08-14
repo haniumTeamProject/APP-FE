@@ -15,11 +15,12 @@
     android:paddingTop="@dimen/screen_pad_top"
     android:paddingBottom="@dimen/screen_pad_bottom">
 
+    <!-- 장식용 큰 상자. 자식 텍스트까지 통째로 숨긴다. "no"만 쓰면 안쪽 텍스트가 새어 읽힌다. -->
     <LinearLayout
         style="@style/Card.Hero"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:importantForAccessibility="no">
+        android:importantForAccessibility="noHideDescendants">
 
         <TextView
             style="@style/Text.Headline"
