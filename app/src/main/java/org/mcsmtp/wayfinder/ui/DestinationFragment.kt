@@ -35,6 +35,8 @@ class DestinationFragment : Fragment() {
     private var statusText: TextView? = null
     private var retryBtn: View? = null
     private var listContainer: LinearLayout? = null
+    /** 목록을 감싼 ScrollView. 듣는 중 TalkBack에서 숨길 때는 이 스크롤 영역째로 가린다. */
+    private var listScroll: View? = null
 
     private var destinations: List<Destination> = emptyList()
 
@@ -67,6 +69,7 @@ class DestinationFragment : Fragment() {
         statusText = view.findViewById(R.id.status_text)
         retryBtn = view.findViewById(R.id.btn_retry)
         listContainer = view.findViewById(R.id.dest_list)
+        listScroll = view.findViewById(R.id.dest_scroll)
 
         stt = SttManager(requireContext())
 
@@ -77,6 +80,11 @@ class DestinationFragment : Fragment() {
         buildList(listContainer!!)
         view.findViewById<TextView>(R.id.dest_count).text =
             getString(R.string.dest_pick_count, destinations.size)
+
+        // 듣는 중에는 목록을 TalkBack에서 숨긴다. 마이크가 열린 채 TalkBack이 목록을 읽으면
+        // 그 소리를 STT가 인식한다. 음성이 실패해 목록으로 넘어갈 때 다시 드러낸다.
+        // (화면 명세: "듣는 중" 포커스 요소 0)
+        setListTalkBackVisible(false)
 
         // [다시 말하기]는 예시 없이 곧장 마이크를 연다. 예시는 첫 진입에서 이미 들었다.
         retryBtn?.setOnClickListener { ensurePermissionThenListen(withExample = false) }
@@ -109,6 +117,8 @@ class DestinationFragment : Fragment() {
         act.speech.stop()
         statusText?.setText(R.string.dest_listening)
         retryBtn?.visibility = View.GONE
+        // 듣는 동안 목록을 다시 숨긴다. 폴백 후 [다시 말하기]로 돌아온 경우까지 커버한다.
+        setListTalkBackVisible(false)
 
         awaitingResult = true
         if (withExample) {
@@ -195,11 +205,25 @@ class DestinationFragment : Fragment() {
         stt?.cancel()
         statusText?.setText(R.string.dest_use_list)
         retryBtn?.visibility = View.VISIBLE
+        // 이제 목록으로 고르므로 TalkBack에 다시 드러낸다.
+        setListTalkBackVisible(true)
         act.speech.speak(view, message)
 
         val firstRow = listContainer?.getChildAt(0)
         if (firstRow != null) act.moveAccessibilityFocus(firstRow)
         else act.moveAccessibilityFocus(retryBtn)
+    }
+
+    /**
+     * 목록을 TalkBack 탐색에 넣을지 뺄지 정한다.
+     * 시각적으로는 늘 보이지만(저시력 사용자용), 듣는 중에는 TalkBack 발화를 막아
+     * 마이크가 자기 음성을 인식하지 않게 한다.
+     */
+    private fun setListTalkBackVisible(visible: Boolean) {
+        // 스크롤 영역째로 가린다. 안쪽 행만 숨기면 ScrollView 가 스크롤 컨테이너로 포커스를 먹는다.
+        listScroll?.importantForAccessibility =
+            if (visible) View.IMPORTANT_FOR_ACCESSIBILITY_AUTO
+            else View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
     }
 
     private fun select(dest: Destination) {
@@ -257,6 +281,7 @@ class DestinationFragment : Fragment() {
         statusText = null
         retryBtn = null
         listContainer = null
+        listScroll = null
         super.onDestroyView()
     }
 
