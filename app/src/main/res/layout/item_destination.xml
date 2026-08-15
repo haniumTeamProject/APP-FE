@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:importantForAccessibility="no" />
 
+    <!-- 부제. 건물 선택 화면은 "목적지 n곳"을 쓰고, 목적지 화면은 숨긴다(이름만). -->
     <TextView
         android:id="@+id/row_sub"
         style="@style/Text.Body"

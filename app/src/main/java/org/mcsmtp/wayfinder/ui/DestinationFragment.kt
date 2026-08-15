@@ -240,39 +240,22 @@ class DestinationFragment : Fragment() {
         }
     }
 
-    /** Figma 「06 목적지 목록」의 행. 제목만 읽히면 되므로 라벨은 행 전체에 건다. */
+    /**
+     * Figma 「06 목적지 목록」의 행. 이름만 보여준다.
+     *
+     * 부제는 두지 않는다. doorSide(왼쪽/오른쪽)는 걷기 전이라 기준이 없어 선택 단계에선 뜻이 없고
+     * (방향은 안내 중에만 말한다), type(화장실·엘리베이터 등)은 이름에 이미 들어 있어 겹친다.
+     */
     private fun makeRow(inflater: LayoutInflater, parent: LinearLayout, dest: Destination): View =
         inflater.inflate(R.layout.item_destination, parent, false).apply {
             findViewById<TextView>(R.id.row_title).text = dest.name
-
-            val sub = findViewById<TextView>(R.id.row_sub)
-            val hint = subtitleOf(dest)
-            if (hint == null) sub.visibility = View.GONE else sub.text = hint
-
+            // 공유 행 레이아웃의 부제는 이 화면에선 쓰지 않는다(이름만).
+            findViewById<TextView>(R.id.row_sub).visibility = View.GONE
             contentDescription = "${dest.name}, 버튼"
             (layoutParams as LinearLayout.LayoutParams).bottomMargin =
                 resources.getDimensionPixelSize(R.dimen.screen_gap)
             setOnClickListener { select(dest) }
         }
-
-    /**
-     * 행의 부연 문구. 목 데이터에 실제로 있는 값만 쓴다.
-     * 거리나 소요 시간은 서버가 경로를 계산해야 나오는 값이라 여기서는 알 수 없다.
-     */
-    private fun subtitleOf(dest: Destination): String? {
-        val side = when (dest.doorSide) {
-            "left" -> "왼쪽"
-            "right" -> "오른쪽"
-            else -> null
-        }
-        val kind = when (dest.type) {
-            "restroom" -> "화장실"
-            "elevator" -> "엘리베이터"
-            "stairs" -> "계단"
-            else -> null
-        }
-        return listOfNotNull(side, kind).takeIf { it.isNotEmpty() }?.joinToString(" · ")
-    }
 
     override fun onDestroyView() {
         handler.removeCallbacksAndMessages(null)

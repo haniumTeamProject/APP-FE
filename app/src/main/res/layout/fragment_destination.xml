@@ -95,10 +95,15 @@
             android:importantForAccessibility="no" />
     </LinearLayout>
 
+    <!--
+      목록의 머리말. 카드가 아니라 '섹션 제목'이다.
+      카드로 두면 아래 목적지 행(같은 회색 카드)과 구분이 안 돼 고를 수 있는 항목처럼 보인다.
+      배경을 없애 흰 바탕 위 제목으로 두면, 아래 회색 카드들이 '고를 목록'으로 분리돼 보인다.
+    -->
     <LinearLayout
-        style="@style/Card.Sub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_marginTop="@dimen/screen_gap"
         android:importantForAccessibility="noHideDescendants">
 
