@@ -17,6 +17,7 @@
     android:paddingBottom="@dimen/screen_pad_bottom">
 
     <LinearLayout
+        android:id="@+id/dest_hero"
         style="@style/Card.Hero"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,13 +59,6 @@
             android:layout_marginTop="@dimen/gap_hero"
             android:text="@string/dest_listening" />
 
-        <TextView
-            android:id="@+id/status_hint"
-            style="@style/Text.Body"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gap_hero"
-            android:text="@string/dest_example" />
     </LinearLayout>
 
     <!-- 실패했을 때만 나타난다. 나타나면 포커스가 이리로 온다. -->

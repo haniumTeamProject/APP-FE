@@ -40,6 +40,9 @@ class SpeechOutput(context: Context) {
 
     private var onDone: (() -> Unit)? = null
 
+    /** TTS 준비 전에 들어온 발화. 준비되면 한 번 재생한다(진입 화면 안내가 콜드 스타트에 묻히는 것 방지). */
+    private var pending: (() -> Unit)? = null
+
     init {
         tts = TextToSpeech(context.applicationContext) { status ->
             if (status != TextToSpeech.SUCCESS) {
@@ -67,6 +70,9 @@ class SpeechOutput(context: Context) {
                 })
             }
             ready = true
+            // TTS 바인딩은 앱 시작보다 늦다. 준비 전에 들어온 첫 발화(진입 화면 안내)를 여기서 재생한다.
+            pending?.invoke()
+            pending = null
         }
     }
 
@@ -88,8 +94,13 @@ class SpeechOutput(context: Context) {
 
     /** 발화가 끝나면 [after]를 호출한다. 마이크를 열기 전 TTS 종료를 기다릴 때 쓴다. */
     fun speakThen(text: String?, after: () -> Unit) {
-        if (text.isNullOrBlank() || !ready) {
+        if (text.isNullOrBlank()) {
             after(); return
+        }
+        // 준비 전이면 준비될 때까지 미뤄 둔다. 그래야 진입 안내가 나온 뒤 마이크가 열린다.
+        if (!ready) {
+            pending = { speakThen(text, after) }
+            return
         }
         lastUtterance = text
         onDone = after
@@ -97,7 +108,10 @@ class SpeechOutput(context: Context) {
     }
 
     private fun speakWithTts(text: String, flush: Boolean) {
-        if (!ready) return
+        if (!ready) {
+            pending = { speakWithTts(text, flush) }
+            return
+        }
         val mode = if (flush) TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD
         tts?.speak(text, mode, null, "u${System.currentTimeMillis()}")
     }

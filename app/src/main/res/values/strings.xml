@@ -3,15 +3,19 @@
     <string name="brand_mark">WAYFINDER</string>
 
     <!-- ⓪ 건물·층 선택 -->
-    <string name="place_title">어느 건물인가요?</string>
-    <string name="place_sub">건물을 골라주세요</string>
     <string name="place_count">목적지 %1$d곳</string>
     <string name="place_floors">%1$d개 층</string>
-    <string name="place_enter">어느 건물에 계신가요? 위아래로 넘겨 골라주세요.</string>
 
-    <string name="floor_title">몇 층인가요?</string>
-    <string name="floor_sub">층을 골라주세요</string>
-    <string name="floor_enter">%1$s, 몇 층에 계신가요? 위아래로 넘겨 골라주세요.</string>
+    <!-- 음성으로 건물·층 고르기 -->
+    <string name="building_enter_example">어느 건물에 계신가요?</string>
+    <string name="building_pick_count">건물 %1$d곳</string>
+    <string name="floor_enter_example">몇 층에 계신가요?</string>
+    <string name="floor_enter_desc">몇 층에 계신가요? %1$s</string>
+    <string name="floor_range">%1$s부터 %2$s이 있습니다</string>
+    <string name="floor_pick_count">층 %1$d개</string>
+
+    <!-- STT 실패: 고를 수 있는 항목을 읽어주고 다시 듣는다 -->
+    <string name="voice_options_relisten">못 알아들었어요. 고를 수 있는 건 %1$s예요. 하나를 말씀해 주세요.</string>
 
     <!-- ① 홈 -->
     <string name="home_status">안내 준비됨</string>
@@ -43,18 +47,17 @@
       진입 안내. 마이크를 열기 직전에 한 번만 말한다. 예시가 여기 있어야
       첫 사용자가 "뭐라고 말해야 하나"를 안다. 화면을 못 보는 사용자에겐 힌트가 이 발화뿐이다.
     -->
-    <string name="dest_enter_example">목적지를 말씀하세요. 예를 들어 401호.</string>
+    <string name="dest_enter_example">목적지를 말씀하세요.</string>
     <string name="dest_failed_speech">못 들었어요. 다시 말씀해 주세요.</string>
     <!-- 2회 실패 시. 같은 방법을 더 반복시키지 않고 작동하는 방법으로 넘긴다. -->
-    <string name="dest_fallback_speech">목록에서 골라주세요. 위아래로 넘기면 됩니다.</string>
+    <string name="dest_fallback_speech">목록에서 골라주세요. 위아래로 쓸어 넘기며 듣고, 원하는 것을 두 번 두드리세요.</string>
     <string name="dest_use_list">목록에서 골라주세요</string>
-    <string name="dest_example">“401호로 가줘”</string>
     <string name="dest_retry">다시 말하기</string>
     <string name="dest_retry_desc">다시 말하기, 버튼</string>
     <string name="dest_pick_title">목록에서 고르기</string>
     <string name="dest_pick_sub">목적지를 불러오는 중</string>
     <string name="dest_pick_count">목적지 %1$d곳</string>
-    <string name="dest_mic_denied">마이크 권한이 없어 음성 입력을 쓸 수 없습니다. 아래 목록에서 골라주세요.</string>
+    <string name="dest_mic_denied">마이크 권한이 없어 음성 입력을 쓸 수 없습니다. 목록에서 위아래로 쓸어 넘기며 듣고, 원하는 것을 두 번 두드리세요.</string>
 
     <!-- ③ 안내 -->
     <string name="nav_routing">경로를 찾고 있습니다</string>
