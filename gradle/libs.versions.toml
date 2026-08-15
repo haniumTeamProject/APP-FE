@@ -18,6 +18,8 @@ constraintlayout = "2.1.4"
 okhttp = "5.4.0"
 gson = "2.11.0"
 fragmentKtx = "1.8.5"
+# Firebase App Distribution — 데모 임시 배포(링크로 설치). Firebase SDK 없이 업로드만 담당.
+firebaseAppDistribution = "5.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,4 +38,5 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+firebase-appdistribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseAppDistribution" }
 
