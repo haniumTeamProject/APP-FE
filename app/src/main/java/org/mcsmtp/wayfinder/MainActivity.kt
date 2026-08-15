@@ -25,9 +25,7 @@ import org.mcsmtp.wayfinder.state.NavState
 import org.mcsmtp.wayfinder.state.NavStateMachine
 import org.mcsmtp.wayfinder.ui.ArrivalFragment
 import org.mcsmtp.wayfinder.ui.DestinationFragment
-import org.mcsmtp.wayfinder.ui.FloorFragment
 import org.mcsmtp.wayfinder.ui.NavigationFragment
-import org.mcsmtp.wayfinder.ui.PlaceFragment
 import org.mcsmtp.wayfinder.util.Haptics
 
 /**
@@ -41,7 +39,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var haptics: Haptics; private set
     lateinit var api: MockApi; private set
 
-    /** 선택된 건물·층. 진입 시 [PlaceFragment]에서 고른다. Fragment 간 공유 상태. */
+    /**
+     * 현재 건물·층. 사용자가 고르지 않고 [autoDetectLocation]이 정한다.
+     * 실제로는 서버가 비콘으로 판별하고, 목에서는 기본 위치로 대체한다. Fragment 간 공유 상태.
+     */
     var selectedBuilding: Building? = null
     var selectedFloor: Floor? = null
 
@@ -76,20 +77,36 @@ class MainActivity : AppCompatActivity() {
                 }
                 when (machine.current) {
                     NavState.NAVIGATING -> confirmStop()
-                    // 진입 화면(건물 선택)에서 뒤로가기는 앱을 닫는다. 그 위로 갈 곳이 없다.
-                    // 온보딩 중에도 machine.current는 SELECTING_PLACE라 이 분기가 적용되어 앱이 닫힌다 — 1회성 최초 실행 흐름이라 의도된 동작.
-                    NavState.SELECTING_PLACE -> finish()
-                    // 층 선택에서 뒤로가기는 건물 선택으로 돌아간다.
-                    NavState.SELECTING_FLOOR -> machine.transition(NavState.SELECTING_PLACE)
+                    // 진입 화면(목적지 선택)에서 뒤로가기는 앱을 닫는다. 그 위로 갈 곳이 없다.
+                    // 온보딩 중에도 machine.current는 LISTENING이라 이 분기가 적용되어 앱이 닫힌다 — 1회성 최초 실행 흐름이라 의도된 동작.
+                    NavState.LISTENING -> finish()
                     else -> machine.reset()
                 }
             }
         })
 
         if (savedInstanceState == null) {
-            if (OnboardingPrefs(this).isDone()) render(NavState.SELECTING_PLACE)
+            if (OnboardingPrefs(this).isDone()) startEntry()
             else showOnboarding()
         }
+    }
+
+    /** 진입: 위치를 자동 판별하고 곧바로 목적지 음성 입력을 연다. */
+    private fun startEntry() {
+        autoDetectLocation()
+        render(NavState.LISTENING)
+    }
+
+    /**
+     * 현재 위치(건물·층)를 정한다. 사용자는 고르지 않는다.
+     * 실제로는 서버가 비콘(UUID→건물, major→층)으로 판별한다. 목에서는 기본 위치로 대체한다.
+     * 실제 비콘/WS 연동(8단계)이 붙으면 이 자리를 서버 판별로 바꾼다.
+     */
+    private fun autoDetectLocation() {
+        val buildings = runCatching { api.buildings().buildings }.getOrElse { emptyList() }
+        val building = buildings.firstOrNull { it.id == "suwon_ict" } ?: buildings.firstOrNull()
+        selectedBuilding = building
+        selectedFloor = building?.floors?.firstOrNull { it.floor == 4 } ?: building?.floors?.firstOrNull()
     }
 
     override fun onResume() {
@@ -112,9 +129,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** 온보딩이 끝나면 호출된다. 안내 진입 화면으로 전환한다. */
+    /** 온보딩이 끝나면 호출된다. 위치 자동 판별 후 목적지 음성 입력으로 간다. */
     fun startAfterOnboarding() {
-        render(NavState.SELECTING_PLACE)
+        startEntry()
     }
 
     /** 홈에서 길게 눌러 사용법 화면을 띄운다. 상태 머신 바깥의 화면이라 별도 태그로 붙인다. */
@@ -133,8 +150,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun render(state: NavState) {
         val fragment: Fragment = when (state) {
-            NavState.SELECTING_PLACE -> PlaceFragment()
-            NavState.SELECTING_FLOOR -> FloorFragment()
             NavState.LISTENING -> DestinationFragment()
             NavState.ROUTING, NavState.NAVIGATING -> NavigationFragment()
             NavState.ARRIVED -> ArrivalFragment()

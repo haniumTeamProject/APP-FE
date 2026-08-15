@@ -14,25 +14,21 @@ class NavStateMachine {
         fun onStateChanged(from: NavState, to: NavState)
     }
 
-    var current: NavState = NavState.SELECTING_PLACE
+    var current: NavState = NavState.LISTENING
         private set
 
     private val listeners = mutableListOf<Listener>()
 
     /**
      * 허용된 전이만 정의한다. 정의되지 않은 전이는 무시된다.
-     * 어느 상태에서든 건물 선택(SELECTING_PLACE)으로 돌아갈 수 있어야 한다 —
+     * 어느 상태에서든 목적지 선택(LISTENING)으로 돌아갈 수 있어야 한다 —
      * 취소·중지·종료가 모두 진입 화면으로 모인다.
      */
     private val allowed: Map<NavState, Set<NavState>> = mapOf(
-        // 건물을 고르면 층 선택으로. 층이 하나뿐이면 곧장 목적지 선택으로 건너뛴다.
-        NavState.SELECTING_PLACE to setOf(NavState.SELECTING_FLOOR, NavState.LISTENING),
-        // 층을 고르면 목적지 선택으로. 뒤로 가면 건물 선택으로.
-        NavState.SELECTING_FLOOR to setOf(NavState.LISTENING, NavState.SELECTING_PLACE),
-        NavState.LISTENING to setOf(NavState.ROUTING, NavState.SELECTING_PLACE),
-        NavState.ROUTING to setOf(NavState.NAVIGATING, NavState.SELECTING_PLACE),
-        NavState.NAVIGATING to setOf(NavState.ARRIVED, NavState.SELECTING_PLACE),
-        NavState.ARRIVED to setOf(NavState.SELECTING_PLACE, NavState.LISTENING),
+        NavState.LISTENING to setOf(NavState.ROUTING),
+        NavState.ROUTING to setOf(NavState.NAVIGATING, NavState.LISTENING),
+        NavState.NAVIGATING to setOf(NavState.ARRIVED, NavState.LISTENING),
+        NavState.ARRIVED to setOf(NavState.LISTENING),
     )
 
     fun addListener(l: Listener) {
@@ -58,9 +54,9 @@ class NavStateMachine {
         return true
     }
 
-    /** 어느 상태에서든 건물 선택으로. 취소·중지·종료 공통 경로. */
+    /** 어느 상태에서든 목적지 선택으로. 취소·중지·종료 공통 경로. */
     fun reset() {
-        if (current != NavState.SELECTING_PLACE) transition(NavState.SELECTING_PLACE)
+        if (current != NavState.LISTENING) transition(NavState.LISTENING)
     }
 
     private companion object {
