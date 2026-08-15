@@ -171,15 +171,23 @@ abstract class VoicePickFragment<T> : Fragment() {
     private fun handleFailure() {
         stt?.cancel()
         failCount++
-        if (failCount >= 2) fallbackToList(getString(R.string.dest_fallback_speech))
-        else showRetry()
+        // 실패하면 고를 수 있는 항목을 읽어주고 다시 듣는다.
+        // 여러 번 실패하면 최종 안전장치로 목록(TalkBack 스와이프)으로 넘긴다.
+        if (failCount >= MAX_LISTEN_ATTEMPTS) fallbackToList(getString(R.string.dest_fallback_speech))
+        else announceOptionsAndRelisten()
     }
 
-    private fun showRetry() {
+    /** 고를 수 있는 항목을 읽어주고 마이크를 다시 연다. 화면을 못 보는 사용자가 후보를 듣고 말할 수 있게. */
+    private fun announceOptionsAndRelisten() {
         statusText?.setText(R.string.dest_failed)
-        retryBtn?.visibility = View.VISIBLE
-        act.speech.speak(view, getString(R.string.dest_failed_speech))
-        act.moveAccessibilityFocus(retryBtn)
+        retryBtn?.visibility = View.GONE
+        setListTalkBackVisible(false)
+        val names = items.joinToString(", ") { titleOf(it) }
+        awaitingResult = true
+        // 안내가 끝난 뒤 마이크를 연다(자기 음성을 인식하지 않게).
+        act.speech.speakThen(getString(R.string.voice_options_relisten, names)) {
+            handler.post { if (isAdded) stt?.start(sttCallback) }
+        }
     }
 
     private fun fallbackToList(message: String) {
@@ -239,5 +247,7 @@ abstract class VoicePickFragment<T> : Fragment() {
 
     private companion object {
         const val MIC_OPEN_DELAY_MS = 900L
+        /** 이 횟수만큼 음성 인식이 실패하면 목록(스와이프)으로 넘긴다. */
+        const val MAX_LISTEN_ATTEMPTS = 3
     }
 }

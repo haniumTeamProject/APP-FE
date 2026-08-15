@@ -10,7 +10,12 @@
     <string name="building_enter_example">어느 건물에 계신가요?</string>
     <string name="building_pick_count">건물 %1$d곳</string>
     <string name="floor_enter_example">몇 층에 계신가요?</string>
+    <string name="floor_enter_desc">몇 층에 계신가요? %1$s</string>
+    <string name="floor_range">%1$s부터 %2$s이 있습니다</string>
     <string name="floor_pick_count">층 %1$d개</string>
+
+    <!-- STT 실패: 고를 수 있는 항목을 읽어주고 다시 듣는다 -->
+    <string name="voice_options_relisten">못 알아들었어요. 고를 수 있는 건 %1$s예요. 하나를 말씀해 주세요.</string>
 
     <!-- ① 홈 -->
     <string name="home_status">안내 준비됨</string>
