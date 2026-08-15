@@ -86,7 +86,11 @@ class SpeechOutput(context: Context) {
 
         val useOwnTts = priority == Priority.SAFETY || !talkBackEnabled || root == null
         if (useOwnTts) {
-            speakWithTts(text, flush = priority == Priority.SAFETY)
+            // 자체 TTS는 늘 이전 발화를 끊고(QUEUE_FLUSH) 새 안내를 말한다.
+            // 큐에 쌓으면 발화가 화면 전환보다 길 때(경로 안내 1초 tick 등) 소리가
+            // 화면보다 뒤처져 밀리고, 앞 화면 발화가 다음 화면과 겹쳐 들린다.
+            // 항상 "지금 화면의 안내"만 들리게 한다.
+            speakWithTts(text, flush = true)
         } else {
             announce(root, text)
         }

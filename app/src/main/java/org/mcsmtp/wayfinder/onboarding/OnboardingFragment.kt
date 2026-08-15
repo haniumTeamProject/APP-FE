@@ -74,6 +74,13 @@ class OnboardingFragment : Fragment() {
         actionBtn?.setOnClickListener { onAdvance() }
         skipBtn?.setOnClickListener { onSkip() }
 
+        // 화면 어디를 눌러도 넘어가게 루트 전체를 탭 대상으로 둔다.
+        // 앞을 못 보는 사용자는 히어로 카드를 조준할 수 없어, 빈 영역 탭이 무반응이면
+        // "화면을 두 번 두드리면 다음"이라는 안내와 어긋난다. TalkBack 탐색엔 잡히지 않게 둔다
+        // (자식 요소는 그대로 읽힌다). 권한 단계만 render 에서 이 탭을 끈다.
+        view.setOnClickListener { onAdvance() }
+        view.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+
         render(step)
     }
 
@@ -89,6 +96,8 @@ class OnboardingFragment : Fragment() {
         // 히어로는 기본적으로 "다음" 대상. 권한 단계만 예외로 정보 표시로 바꾼다.
         hero?.isClickable = true
         hero?.isFocusable = true
+        // 권한 단계는 배경 탭으로 넘어가지 않는다(권한 팝업이 뜨면 안 됨). 나머지는 화면 전체가 "다음".
+        view?.isClickable = s != OnboardingStep.PERMISSIONS
 
         when (s) {
             OnboardingStep.INTRO -> {
@@ -116,9 +125,16 @@ class OnboardingFragment : Fragment() {
                 practiceCard?.visibility = View.VISIBLE
                 hint?.setText(R.string.onboarding_practice_hint)
                 hero?.contentDescription = getString(R.string.onboarding_practice_prompt)
-                speak(R.string.onboarding_practice_speech)
                 act.moveAccessibilityFocus(hero)
-                handler.postDelayed(autoPass, PRACTICE_TIMEOUT_MS)
+                // 연습 안내가 끝난 뒤부터 5초를 센다. 안내 발화(~5초)와 대기를 겹쳐 돌리면
+                // "말하자마자 자동 통과"처럼 느껴진다. 발화 종료 콜백에서 타이머를 건다.
+                act.speech.speakThen(getString(R.string.onboarding_practice_speech)) {
+                    handler.post {
+                        if (isAdded && step == OnboardingStep.PRACTICE) {
+                            handler.postDelayed(autoPass, PRACTICE_TIMEOUT_MS)
+                        }
+                    }
+                }
             }
             OnboardingStep.PERMISSIONS -> {
                 hero?.setBackgroundResource(R.drawable.bg_hero)
@@ -156,8 +172,10 @@ class OnboardingFragment : Fragment() {
 
     private val autoPass = Runnable {
         if (step == OnboardingStep.PRACTICE) {
-            act.speech.speak(view, getString(R.string.onboarding_practice_autopass))
-            goNext()
+            // 안내를 끝까지 말한 뒤 화면을 넘긴다. 말하는 즉시 넘기면 다음 화면 안내와 겹친다.
+            act.speech.speakThen(getString(R.string.onboarding_practice_autopass)) {
+                handler.post { if (isAdded) goNext() }
+            }
         }
     }
 
@@ -167,8 +185,10 @@ class OnboardingFragment : Fragment() {
             OnboardingStep.PRACTICE -> {
                 handler.removeCallbacks(autoPass)
                 act.haptics.play(Haptics.Pattern.GUIDE)
-                act.speech.speak(view, getString(R.string.onboarding_practice_success))
-                goNext()
+                // 성공 안내를 끝까지 말한 뒤 넘긴다(다음 화면 안내와 겹치지 않게).
+                act.speech.speakThen(getString(R.string.onboarding_practice_success)) {
+                    handler.post { if (isAdded) goNext() }
+                }
             }
             OnboardingStep.PERMISSIONS -> startPermissionRequests()
             OnboardingStep.DONE -> finishOnboarding()
