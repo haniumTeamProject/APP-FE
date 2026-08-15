@@ -17,3 +17,6 @@ local.properties
 # IDE (전체 무시)
 /.idea/
 .kotlin/
+
+# 작업용 설계·계획 문서 (공용 저장소에 올리지 않음)
+docs/superpowers/
