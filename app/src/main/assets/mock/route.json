@@ -82,7 +82,7 @@
       "beaconId": "B25",
       "turn": null,
       "template": "arrive",
-      "instruction": "409호입니다. 문은 왼쪽에 있습니다.",
+      "instruction": "409호에 도착했습니다.",
       "isArrival": true
     }
   ]
