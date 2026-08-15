@@ -43,6 +43,8 @@ android {
                 artifactType = "APK"
                 // 쉼표로 구분한 테스터 이메일. 이들에게 설치 링크 메일이 발송된다.
                 testers = localProps.getProperty("firebase.testers") ?: ""
+                // 그룹 별칭(쉼표 구분). 초대 링크로 등록한 팀원이 이 그룹에 들어가 릴리스를 본다.
+                groups = localProps.getProperty("firebase.groups") ?: ""
                 releaseNotes = "WayFinder 데모 빌드"
             }
         }
