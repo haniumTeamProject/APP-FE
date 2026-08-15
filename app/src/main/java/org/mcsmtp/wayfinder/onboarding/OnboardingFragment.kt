@@ -31,6 +31,8 @@ class OnboardingFragment : Fragment() {
 
     private var step = OnboardingStep.INTRO
 
+    private var hero: View? = null
+    private var topSpacer: View? = null
     private var iconWrap: View? = null
     private var icon: ImageView? = null
     private var title: TextView? = null
@@ -54,6 +56,8 @@ class OnboardingFragment : Fragment() {
         act = requireActivity() as MainActivity
         prefs = OnboardingPrefs(requireContext())
 
+        hero = view.findViewById(R.id.ob_hero)
+        topSpacer = view.findViewById(R.id.ob_top_spacer)
         iconWrap = view.findViewById(R.id.ob_icon_wrap)
         icon = view.findViewById(R.id.ob_icon)
         title = view.findViewById(R.id.ob_title)
@@ -65,6 +69,8 @@ class OnboardingFragment : Fragment() {
         skipBtn = view.findViewById(R.id.ob_skip)
         hint = view.findViewById(R.id.ob_hint)
 
+        // 히어로 = "다음" 대상(권한 단계 제외). 버튼은 권한 단계에서만 액션.
+        hero?.setOnClickListener { onAdvance() }
         actionBtn?.setOnClickListener { onAdvance() }
         skipBtn?.setOnClickListener { onSkip() }
 
@@ -73,40 +79,59 @@ class OnboardingFragment : Fragment() {
 
     private fun render(s: OnboardingStep) {
         step = s
+        // 공통 초기화
+        topSpacer?.visibility = View.GONE
         practiceCard?.visibility = View.GONE
         permListView?.visibility = View.GONE
+        actionBtn?.visibility = View.GONE
         skipBtn?.visibility = if (OnboardingFlow.canSkip(s)) View.VISIBLE else View.GONE
         hint?.text = ""
+        // 히어로는 기본적으로 "다음" 대상. 권한 단계만 예외로 정보 표시로 바꾼다.
+        hero?.isClickable = true
+        hero?.isFocusable = true
 
         when (s) {
             OnboardingStep.INTRO -> {
+                // 흰 배경 스플래시: 히어로 배경을 지우고 위·아래 스페이서로 중앙에 둔다.
+                topSpacer?.visibility = View.VISIBLE
+                hero?.setBackgroundResource(0)
                 iconWrap?.visibility = View.VISIBLE
                 iconWrap?.setBackgroundResource(R.drawable.circle_mint)
                 icon?.setImageResource(R.drawable.ic_arrow_right)
                 title?.setText(R.string.onboarding_intro_title)
                 sub?.setText(R.string.onboarding_intro_sub)
-                actionLabel?.setText(R.string.onboarding_next)
-                actionBtn?.contentDescription = getString(R.string.onboarding_next)
+                hero?.contentDescription =
+                    getString(R.string.onboarding_intro_title) + ". " +
+                        getString(R.string.onboarding_advance_desc)
                 speak(R.string.onboarding_intro_speech)
-                act.moveAccessibilityFocus(actionBtn)
+                act.moveAccessibilityFocus(hero)
             }
             OnboardingStep.PRACTICE -> {
-                iconWrap?.visibility = View.GONE
+                hero?.setBackgroundResource(R.drawable.bg_hero)
+                iconWrap?.visibility = View.VISIBLE
+                iconWrap?.setBackgroundResource(R.drawable.circle_mint)
+                icon?.setImageResource(R.drawable.ic_mic)
                 title?.setText(R.string.onboarding_practice_title)
                 sub?.setText(R.string.onboarding_practice_sub)
                 practiceCard?.visibility = View.VISIBLE
-                actionLabel?.setText(R.string.onboarding_next)
-                actionBtn?.contentDescription = getString(R.string.onboarding_practice_prompt)
                 hint?.setText(R.string.onboarding_practice_hint)
+                hero?.contentDescription = getString(R.string.onboarding_practice_prompt)
                 speak(R.string.onboarding_practice_speech)
-                act.moveAccessibilityFocus(actionBtn)
+                act.moveAccessibilityFocus(hero)
                 handler.postDelayed(autoPass, PRACTICE_TIMEOUT_MS)
             }
             OnboardingStep.PERMISSIONS -> {
+                hero?.setBackgroundResource(R.drawable.bg_hero)
                 iconWrap?.visibility = View.GONE
                 title?.setText(R.string.onboarding_perm_title)
                 sub?.setText(R.string.onboarding_perm_sub)
                 permListView?.visibility = View.VISIBLE
+                // 이 단계는 히어로가 아니라 하단 버튼이 액션이다. 히어로는 정보 표시로 둔다.
+                hero?.isClickable = false
+                hero?.contentDescription =
+                    getString(R.string.onboarding_perm_title) + ". " +
+                        getString(R.string.onboarding_perm_sub)
+                actionBtn?.visibility = View.VISIBLE
                 actionLabel?.setText(R.string.onboarding_perm_allow)
                 actionBtn?.contentDescription = getString(R.string.onboarding_perm_allow_desc)
                 hint?.setText(R.string.onboarding_perm_hint)
@@ -114,15 +139,17 @@ class OnboardingFragment : Fragment() {
                 act.moveAccessibilityFocus(actionBtn)
             }
             OnboardingStep.DONE -> {
+                hero?.setBackgroundResource(R.drawable.bg_hero)
                 iconWrap?.visibility = View.VISIBLE
                 iconWrap?.setBackgroundResource(R.drawable.circle_blue)
                 icon?.setImageResource(R.drawable.ic_check)
                 title?.setText(R.string.onboarding_done_title)
                 sub?.setText(R.string.onboarding_done_sub)
-                actionLabel?.setText(R.string.onboarding_start)
-                actionBtn?.contentDescription = getString(R.string.onboarding_start)
+                hero?.contentDescription =
+                    getString(R.string.onboarding_done_title) + ". " +
+                        getString(R.string.onboarding_start_desc)
                 speak(R.string.onboarding_done_speech)
-                act.moveAccessibilityFocus(actionBtn)
+                act.moveAccessibilityFocus(hero)
             }
         }
     }
@@ -189,6 +216,7 @@ class OnboardingFragment : Fragment() {
 
     override fun onDestroyView() {
         handler.removeCallbacksAndMessages(null)
+        hero = null; topSpacer = null
         iconWrap = null; icon = null; title = null; sub = null
         practiceCard = null; permListView = null
         actionBtn = null; actionLabel = null; skipBtn = null; hint = null

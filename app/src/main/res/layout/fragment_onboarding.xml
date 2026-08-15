@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  첫 실행 온보딩. 한 레이아웃을 OnboardingFragment 가 단계별로 재구성한다.
-  히어로(제목·소제목·아이콘) 아래에 연습 민트 카드 또는 권한 목록이 토글되고,
-  하단에 액션 타일·건너뛰기·힌트가 놓인다.
+  첫 실행 온보딩. 한 화면을 4단계(소개·연습·권한·완료)로 재구성한다.
+
+  진행(다음)은 시각 버튼 대신 히어로 영역 자체를 눌러서 한다(Figma 시안에 별도 버튼이 없다).
+  히어로를 focusable/clickable로 두고 라벨을 걸어, TalkBack은 두 번 탭으로 시각 사용자는
+  단일 탭으로 넘어간다 — 홈 타일과 같은 방식. 권한 단계만 예외로 하단 민트 버튼이 액션이다.
+
+  소개(①)는 흰 배경 스플래시라 위·아래 스페이서로 히어로를 세로 중앙에 둔다.
+  나머지 단계는 위 스페이서를 숨겨 히어로를 상단에 붙인다.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -14,11 +19,23 @@
     android:paddingTop="@dimen/screen_pad_top"
     android:paddingBottom="@dimen/screen_pad_bottom">
 
+    <!-- 소개 단계에서만 보인다. 히어로를 세로 중앙에 두기 위한 위쪽 여백. -->
+    <View
+        android:id="@+id/ob_top_spacer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone" />
+
+    <!-- 히어로 = "다음" 액션 대상(권한 단계 제외). 배경·아이콘은 단계별로 코드에서 바꾼다. -->
     <LinearLayout
+        android:id="@+id/ob_hero"
         style="@style/Card.Hero"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:focusable="true"
+        android:clickable="true">
 
         <FrameLayout
             android:id="@+id/ob_icon_wrap"
@@ -43,7 +60,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/onboarding_intro_title" />
+            android:text="@string/onboarding_intro_title"
+            android:importantForAccessibility="no" />
 
         <TextView
             android:id="@+id/ob_sub"
@@ -52,10 +70,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/gap_hero"
             android:gravity="center"
-            android:text="@string/onboarding_intro_sub" />
+            android:text="@string/onboarding_intro_sub"
+            android:importantForAccessibility="no" />
     </LinearLayout>
 
-    <!-- 연습 단계: 민트 카드 (해야 할 동작) -->
+    <!-- 연습 단계: 해야 할 동작을 민트 카드로 강조 -->
     <LinearLayout
         android:id="@+id/ob_practice_card"
         style="@style/Card.Sub"
@@ -67,7 +86,6 @@
         android:importantForAccessibility="noHideDescendants">
 
         <TextView
-            android:id="@+id/ob_practice_title"
             style="@style/Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -75,7 +93,6 @@
             android:text="@string/onboarding_practice_prompt" />
 
         <TextView
-            android:id="@+id/ob_practice_sub"
             style="@style/Text.Body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,7 +101,7 @@
             android:text="@string/onboarding_practice_prompt_sub" />
     </LinearLayout>
 
-    <!-- 권한 단계: 3개 권한 행 -->
+    <!-- 권한 단계: 3개 권한 행 (Figma 순서: 위치·블루투스 → 마이크 → 알림) -->
     <LinearLayout
         android:id="@+id/ob_perm_list"
         android:layout_width="match_parent"
@@ -98,11 +115,11 @@
             android:layout_width="match_parent" android:layout_height="wrap_content">
             <TextView style="@style/Text.Title"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@string/onboarding_perm_mic" />
+                android:text="@string/onboarding_perm_bt" />
             <TextView style="@style/Text.Body"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/gap_text"
-                android:text="@string/onboarding_perm_mic_sub" />
+                android:text="@string/onboarding_perm_bt_sub" />
         </LinearLayout>
 
         <LinearLayout style="@style/Card.Sub"
@@ -110,11 +127,11 @@
             android:layout_marginTop="@dimen/screen_gap">
             <TextView style="@style/Text.Title"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@string/onboarding_perm_bt" />
+                android:text="@string/onboarding_perm_mic" />
             <TextView style="@style/Text.Body"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/gap_text"
-                android:text="@string/onboarding_perm_bt_sub" />
+                android:text="@string/onboarding_perm_mic_sub" />
         </LinearLayout>
 
         <LinearLayout style="@style/Card.Sub"
@@ -135,20 +152,23 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <!-- 권한 단계에서만 보이는 액션 버튼 -->
     <LinearLayout
         android:id="@+id/ob_action"
         style="@style/Tile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:background="@drawable/bg_tile_mint"
-        android:contentDescription="@string/onboarding_next">
+        android:visibility="gone"
+        android:contentDescription="@string/onboarding_perm_allow_desc">
 
         <TextView
             android:id="@+id/ob_action_label"
             style="@style/Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/onboarding_next"
+            android:text="@string/onboarding_perm_allow"
             android:importantForAccessibility="no" />
     </LinearLayout>
 

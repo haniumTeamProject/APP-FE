@@ -81,8 +81,10 @@
     <string name="err_route_not_found">경로를 찾을 수 없습니다.</string>
 
     <!-- 온보딩 -->
-    <string name="onboarding_intro_title">길을 안내할게요</string>
-    <string name="onboarding_intro_sub">화면을 두 번 두드리면 다음으로</string>
+    <string name="onboarding_intro_title">WayFinder</string>
+    <string name="onboarding_intro_sub">화면을 두 번 두드리면 다음</string>
+    <string name="onboarding_advance_desc">다음으로 넘어가려면 화면을 두 번 두드리세요</string>
+    <string name="onboarding_start_desc">시작하려면 화면을 두 번 두드리세요</string>
     <string name="onboarding_intro_speech">길을 안내할게요. 목적지를 말하면 소리로 안내해요. 다음으로 넘어가려면 화면을 두 번 두드리세요.</string>
 
     <string name="onboarding_practice_title">이렇게 써요</string>
@@ -99,15 +101,15 @@
     <string name="onboarding_perm_speech">안내에 마이크, 블루투스, 알림을 사용해요. 허용해 주세요.</string>
     <string name="onboarding_perm_mic">마이크</string>
     <string name="onboarding_perm_mic_sub">목적지를 말로 알려주세요</string>
-    <string name="onboarding_perm_bt">블루투스</string>
+    <string name="onboarding_perm_bt">위치 · 블루투스</string>
     <string name="onboarding_perm_bt_sub">실내 위치를 확인하는 데 씁니다</string>
     <string name="onboarding_perm_noti">알림</string>
     <string name="onboarding_perm_noti_sub">안내 중 상태를 표시합니다</string>
-    <string name="onboarding_perm_allow">권한 허용하고 계속</string>
+    <string name="onboarding_perm_allow">권한 허용하고 시작하기</string>
     <string name="onboarding_perm_allow_desc">권한 허용하고 계속, 버튼</string>
     <string name="onboarding_perm_hint">허용하지 않아도 목록으로 안내받을 수 있어요</string>
 
-    <string name="onboarding_done_title">준비됐어요</string>
+    <string name="onboarding_done_title">이제 시작할게요</string>
     <string name="onboarding_done_sub">화면을 두 번 두드리세요</string>
     <string name="onboarding_done_speech">준비됐어요. 이제 어디로 갈지 정해요.</string>
     <string name="onboarding_start">시작하기</string>
