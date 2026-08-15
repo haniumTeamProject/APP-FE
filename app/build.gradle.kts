@@ -14,6 +14,16 @@ val localProps = Properties().apply {
     if (f.exists()) f.inputStream().use { load(it) }
 }
 
+// versionCode 를 git 커밋 수로 자동 계산한다. 커밋·머지마다 단조 증가하므로,
+// 배포할 때마다 App Distribution 이 "새 릴리스"로 인식해 이미 설치한 테스터에게
+// 업데이트 알림이 간다(고정값이면 같은 릴리스에 덮어써져 알림이 안 간다).
+// providers.exec 는 구성 캐시(configuration cache)와 호환된다. git 이 없으면 1 로 폴백.
+val gitCommitCount: Int = runCatching {
+    providers.exec {
+        commandLine("git", "rev-list", "--count", "HEAD")
+    }.standardOutput.asText.get().trim().toInt()
+}.getOrDefault(1)
+
 android {
     namespace = "org.mcsmtp.wayfinder"
     // AGP 8.13 은 API 36 까지 지원한다. 37 은 AGP 9 전용이라 여기서 못 쓴다.
@@ -23,8 +33,8 @@ android {
         applicationId = "org.mcsmtp.wayfinder"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = gitCommitCount
+        versionName = "1.0.$gitCommitCount"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
