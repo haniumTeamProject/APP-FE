@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  첫 실행 온보딩. 한 레이아웃을 OnboardingFragment 가 단계별로 재구성한다.
+  히어로(제목·소제목·아이콘) 아래에 연습 민트 카드 또는 권한 목록이 토글되고,
+  하단에 액션 타일·건너뛰기·힌트가 놓인다.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/screen_bg"
+    android:paddingStart="@dimen/screen_pad_h"
+    android:paddingEnd="@dimen/screen_pad_h"
+    android:paddingTop="@dimen/screen_pad_top"
+    android:paddingBottom="@dimen/screen_pad_bottom">
+
+    <LinearLayout
+        style="@style/Card.Hero"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <FrameLayout
+            android:id="@+id/ob_icon_wrap"
+            android:layout_width="@dimen/mic_size"
+            android:layout_height="@dimen/mic_size"
+            android:layout_marginBottom="@dimen/gap_hero"
+            android:background="@drawable/circle_mint"
+            android:importantForAccessibility="no">
+
+            <ImageView
+                android:id="@+id/ob_icon"
+                android:layout_width="37dp"
+                android:layout_height="37dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_arrow_right"
+                android:contentDescription="@null" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/ob_title"
+            style="@style/Text.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/onboarding_intro_title" />
+
+        <TextView
+            android:id="@+id/ob_sub"
+            style="@style/Text.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_hero"
+            android:gravity="center"
+            android:text="@string/onboarding_intro_sub" />
+    </LinearLayout>
+
+    <!-- 연습 단계: 민트 카드 (해야 할 동작) -->
+    <LinearLayout
+        android:id="@+id/ob_practice_card"
+        style="@style/Card.Sub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/screen_gap"
+        android:background="@drawable/bg_tile_mint"
+        android:visibility="gone"
+        android:importantForAccessibility="noHideDescendants">
+
+        <TextView
+            android:id="@+id/ob_practice_title"
+            style="@style/Text.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/on_mint"
+            android:text="@string/onboarding_practice_prompt" />
+
+        <TextView
+            android:id="@+id/ob_practice_sub"
+            style="@style/Text.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_text"
+            android:textColor="@color/on_mint"
+            android:text="@string/onboarding_practice_prompt_sub" />
+    </LinearLayout>
+
+    <!-- 권한 단계: 3개 권한 행 -->
+    <LinearLayout
+        android:id="@+id/ob_perm_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/screen_gap"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:importantForAccessibility="noHideDescendants">
+
+        <LinearLayout style="@style/Card.Sub"
+            android:layout_width="match_parent" android:layout_height="wrap_content">
+            <TextView style="@style/Text.Title"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/onboarding_perm_mic" />
+            <TextView style="@style/Text.Body"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_text"
+                android:text="@string/onboarding_perm_mic_sub" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/Card.Sub"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/screen_gap">
+            <TextView style="@style/Text.Title"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/onboarding_perm_bt" />
+            <TextView style="@style/Text.Body"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_text"
+                android:text="@string/onboarding_perm_bt_sub" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/Card.Sub"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/screen_gap">
+            <TextView style="@style/Text.Title"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/onboarding_perm_noti" />
+            <TextView style="@style/Text.Body"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_text"
+                android:text="@string/onboarding_perm_noti_sub" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- 마이크 영구 차단 시에만 -->
+    <LinearLayout
+        android:id="@+id/ob_settings"
+        style="@style/Tile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/screen_gap"
+        android:background="@drawable/bg_tile_gray"
+        android:visibility="gone"
+        android:contentDescription="@string/onboarding_open_settings">
+
+        <TextView style="@style/Text.Title"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="@string/onboarding_open_settings"
+            android:importantForAccessibility="no" />
+        <TextView style="@style/Text.Body"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_text"
+            android:text="@string/onboarding_open_settings_sub"
+            android:importantForAccessibility="no" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ob_action"
+        style="@style/Tile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_tile_mint"
+        android:contentDescription="@string/onboarding_next">
+
+        <TextView
+            android:id="@+id/ob_action_label"
+            style="@style/Text.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/onboarding_next"
+            android:importantForAccessibility="no" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/ob_skip"
+        style="@style/Text.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/screen_gap"
+        android:gravity="center"
+        android:focusable="true"
+        android:clickable="true"
+        android:text="@string/onboarding_skip" />
+
+    <TextView
+        android:id="@+id/ob_hint"
+        style="@style/Text.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/screen_gap"
+        android:gravity="center"
+        android:importantForAccessibility="no"
+        android:text="" />
+
+</LinearLayout>
