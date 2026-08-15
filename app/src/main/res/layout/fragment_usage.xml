@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  사용법 화면 — Figma 「22 사용법 · HOW TO USE」.
+  홈에서 길게 눌러 진입한다. 앱에 실제로 있는 제스처만 싣는다(두 번 두드리기·흔들기·길게 누르기).
+  뒤로 가기 또는 [닫기]로 홈으로 돌아간다.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/screen_bg"
+    android:paddingStart="@dimen/screen_pad_h"
+    android:paddingEnd="@dimen/screen_pad_h"
+    android:paddingTop="@dimen/screen_pad_top"
+    android:paddingBottom="@dimen/screen_pad_bottom">
+
+    <!-- 파란 머리말 -->
+    <LinearLayout
+        android:id="@+id/usage_header"
+        style="@style/Card.Sub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_hero"
+        android:importantForAccessibility="noHideDescendants">
+
+        <TextView
+            style="@style/Text.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/usage_title" />
+
+        <TextView
+            style="@style/Text.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_text"
+            android:text="@string/usage_sub" />
+    </LinearLayout>
+
+    <!-- 제스처 목록 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/screen_gap"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/Card.Sub"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:contentDescription="@string/usage_g1_title">
+                <TextView style="@style/Text.Title"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/usage_g1_title"
+                    android:importantForAccessibility="no" />
+                <TextView style="@style/Text.Body"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/gap_text"
+                    android:text="@string/usage_g1_sub"
+                    android:importantForAccessibility="no" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/Card.Sub"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/screen_gap"
+                android:contentDescription="@string/usage_g2_title">
+                <TextView style="@style/Text.Title"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/usage_g2_title"
+                    android:importantForAccessibility="no" />
+                <TextView style="@style/Text.Body"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/gap_text"
+                    android:text="@string/usage_g2_sub"
+                    android:importantForAccessibility="no" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/Card.Sub"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/screen_gap"
+                android:contentDescription="@string/usage_g3_title">
+                <TextView style="@style/Text.Title"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/usage_g3_title"
+                    android:importantForAccessibility="no" />
+                <TextView style="@style/Text.Body"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/gap_text"
+                    android:text="@string/usage_g3_sub"
+                    android:importantForAccessibility="no" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/usage_close"
+        style="@style/Tile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/screen_gap"
+        android:gravity="center"
+        android:background="@drawable/bg_tile_gray"
+        android:contentDescription="@string/usage_close_desc">
+
+        <TextView
+            style="@style/Text.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/usage_close"
+            android:importantForAccessibility="no" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/usage_hint"
+        style="@style/Text.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/screen_gap"
+        android:gravity="center"
+        android:importantForAccessibility="no"
+        android:text="@string/usage_hint" />
+
+</LinearLayout>

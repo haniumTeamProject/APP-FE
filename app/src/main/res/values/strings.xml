@@ -117,7 +117,20 @@
     <string name="onboarding_next">다음</string>
     <string name="onboarding_skip">건너뛰기</string>
 
-    <!-- 홈 사용법 재열람 -->
+    <!-- 홈 사용법 재열람 (길게 누르기 → 사용법 화면) -->
     <string name="home_howto_action">사용법 듣기</string>
-    <string name="home_howto_speech">말하려면 화면을 두 번 두드리세요. 목적지를 말하거나 목록에서 고를 수 있어요.</string>
+
+    <!-- 사용법 화면 (Figma 22). 앱에 실제로 있는 제스처만 싣는다. -->
+    <string name="usage_title">이렇게 쓰세요</string>
+    <string name="usage_sub">언제든 이 화면을 다시 들을 수 있어요</string>
+    <string name="usage_g1_title">두 번 두드리기</string>
+    <string name="usage_g1_sub">고르거나 시작하기</string>
+    <string name="usage_g2_title">흔들기</string>
+    <string name="usage_g2_sub">방금 안내 다시 듣기</string>
+    <string name="usage_g3_title">화면을 길게 누르기</string>
+    <string name="usage_g3_sub">사용법 다시 듣기</string>
+    <string name="usage_hint">토크백을 켜두면 화면을 보지 않고 모두 쓸 수 있습니다</string>
+    <string name="usage_close">닫기</string>
+    <string name="usage_close_desc">닫기, 버튼</string>
+    <string name="usage_speech">사용법이에요. 화면을 두 번 두드리면 고르거나 시작하고, 흔들면 방금 안내를 다시 듣고, 화면을 길게 누르면 이 사용법을 다시 들을 수 있어요. 닫으려면 뒤로 가세요.</string>
 </resources>
