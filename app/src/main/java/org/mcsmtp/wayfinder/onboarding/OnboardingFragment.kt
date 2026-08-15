@@ -1,14 +1,10 @@
 package org.mcsmtp.wayfinder.onboarding
 
-import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,17 +37,12 @@ class OnboardingFragment : Fragment() {
     private var sub: TextView? = null
     private var practiceCard: View? = null
     private var permListView: View? = null
-    private var settingsBtn: View? = null
     private var actionBtn: View? = null
     private var actionLabel: TextView? = null
     private var skipBtn: View? = null
     private var hint: TextView? = null
 
-    /** 권한 단계에서 팝업을 이미 한 바퀴 돌렸는가. 그 뒤 액션은 "계속"으로 다음에 넘긴다. */
-    private var permsRequested = false
-
     private var pendingQueue: MutableList<String> = mutableListOf()
-    private var requesting: String? = null
     private val requestPerm = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { _ -> onPermissionResult() }
@@ -69,7 +60,6 @@ class OnboardingFragment : Fragment() {
         sub = view.findViewById(R.id.ob_sub)
         practiceCard = view.findViewById(R.id.ob_practice_card)
         permListView = view.findViewById(R.id.ob_perm_list)
-        settingsBtn = view.findViewById(R.id.ob_settings)
         actionBtn = view.findViewById(R.id.ob_action)
         actionLabel = view.findViewById(R.id.ob_action_label)
         skipBtn = view.findViewById(R.id.ob_skip)
@@ -77,7 +67,6 @@ class OnboardingFragment : Fragment() {
 
         actionBtn?.setOnClickListener { onAdvance() }
         skipBtn?.setOnClickListener { onSkip() }
-        settingsBtn?.setOnClickListener { openAppSettings() }
 
         render(step)
     }
@@ -86,7 +75,6 @@ class OnboardingFragment : Fragment() {
         step = s
         practiceCard?.visibility = View.GONE
         permListView?.visibility = View.GONE
-        settingsBtn?.visibility = View.GONE
         skipBtn?.visibility = if (OnboardingFlow.canSkip(s)) View.VISIBLE else View.GONE
         hint?.text = ""
 
@@ -115,7 +103,6 @@ class OnboardingFragment : Fragment() {
                 handler.postDelayed(autoPass, PRACTICE_TIMEOUT_MS)
             }
             OnboardingStep.PERMISSIONS -> {
-                permsRequested = false
                 iconWrap?.visibility = View.GONE
                 title?.setText(R.string.onboarding_perm_title)
                 sub?.setText(R.string.onboarding_perm_sub)
@@ -156,8 +143,7 @@ class OnboardingFragment : Fragment() {
                 act.speech.speak(view, getString(R.string.onboarding_practice_success))
                 goNext()
             }
-            OnboardingStep.PERMISSIONS ->
-                if (permsRequested) goNext() else startPermissionRequests()
+            OnboardingStep.PERMISSIONS -> startPermissionRequests()
             OnboardingStep.DONE -> finishOnboarding()
         }
     }
@@ -185,50 +171,14 @@ class OnboardingFragment : Fragment() {
             onAllRequested()
             return
         }
-        requesting = next
         requestPerm.launch(next)
     }
 
-    private fun onPermissionResult() {
-        requesting = null
-        requestNext()
-    }
+    private fun onPermissionResult() = requestNext()
 
-    /**
-     * 팝업을 한 바퀴 다 돌린 뒤. 마이크가 허용됐으면 곧장 다음.
-     * 거부됐으면 이유를 안내하고, 영구 차단이면 설정 열기를 노출한다.
-     * 어느 경우든 앱은 진입 가능하므로, 액션 타일을 "계속"으로 바꿔 사용자가 넘어가게 한다.
-     */
-    private fun onAllRequested() {
-        permsRequested = true
-        val micGranted = ContextCompat.checkSelfPermission(
-            requireContext(), Manifest.permission.RECORD_AUDIO
-        ) == PackageManager.PERMISSION_GRANTED
-
-        if (micGranted) {
-            goNext()
-            return
-        }
-        act.speech.speak(view, getString(R.string.onboarding_mic_denied_speech))
-        actionLabel?.setText(R.string.onboarding_continue)
-        actionBtn?.contentDescription = getString(R.string.onboarding_continue)
-        val permanentlyDenied = !shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
-        if (permanentlyDenied) {
-            settingsBtn?.visibility = View.VISIBLE
-            act.moveAccessibilityFocus(settingsBtn)
-        } else {
-            act.moveAccessibilityFocus(actionBtn)
-        }
-    }
-
-    private fun openAppSettings() {
-        startActivity(
-            Intent(
-                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                Uri.fromParts("package", requireContext().packageName, null),
-            )
-        )
-    }
+    /** 팝업을 한 바퀴 다 돌린 뒤. 허용이든 거부든 다음 단계로 진행한다. 거부된 권한은
+     * 각 기능의 사용 시점에서 대체 수단으로 처리한다(예: 마이크 거부 시 목적지 화면의 목록 선택). */
+    private fun onAllRequested() = goNext()
 
     private fun finishOnboarding() {
         prefs.markDone()
@@ -240,7 +190,7 @@ class OnboardingFragment : Fragment() {
     override fun onDestroyView() {
         handler.removeCallbacksAndMessages(null)
         iconWrap = null; icon = null; title = null; sub = null
-        practiceCard = null; permListView = null; settingsBtn = null
+        practiceCard = null; permListView = null
         actionBtn = null; actionLabel = null; skipBtn = null; hint = null
         super.onDestroyView()
     }

@@ -135,28 +135,6 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- 마이크 영구 차단 시에만 -->
-    <LinearLayout
-        android:id="@+id/ob_settings"
-        style="@style/Tile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/screen_gap"
-        android:background="@drawable/bg_tile_gray"
-        android:visibility="gone"
-        android:contentDescription="@string/onboarding_open_settings">
-
-        <TextView style="@style/Text.Title"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/onboarding_open_settings"
-            android:importantForAccessibility="no" />
-        <TextView style="@style/Text.Body"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gap_text"
-            android:text="@string/onboarding_open_settings_sub"
-            android:importantForAccessibility="no" />
-    </LinearLayout>
-
     <LinearLayout
         android:id="@+id/ob_action"
         style="@style/Tile"

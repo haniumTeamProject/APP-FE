@@ -107,11 +107,6 @@
     <string name="onboarding_perm_allow_desc">권한 허용하고 계속, 버튼</string>
     <string name="onboarding_perm_hint">허용하지 않아도 목록으로 안내받을 수 있어요</string>
 
-    <string name="onboarding_mic_denied_speech">음성으로 목적지를 말하려면 마이크가 필요해요.</string>
-    <string name="onboarding_open_settings">설정 열기</string>
-    <string name="onboarding_open_settings_sub">권한 화면으로 이동</string>
-    <string name="onboarding_continue">계속</string>
-
     <string name="onboarding_done_title">준비됐어요</string>
     <string name="onboarding_done_sub">화면을 두 번 두드리세요</string>
     <string name="onboarding_done_speech">준비됐어요. 이제 어디로 갈지 정해요.</string>

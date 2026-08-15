@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
                 when (machine.current) {
                     NavState.NAVIGATING -> confirmStop()
                     // 진입 화면과 홈에서 뒤로가기는 앱을 닫는다. 그 위로 갈 곳이 없다.
+                    // 온보딩 중에도 machine.current는 SELECTING_PLACE라 이 분기가 적용되어 앱이 닫힌다 — 1회성 최초 실행 흐름이라 의도된 동작.
                     NavState.SELECTING_PLACE, NavState.READY -> finish()
                     else -> machine.reset()
                 }
