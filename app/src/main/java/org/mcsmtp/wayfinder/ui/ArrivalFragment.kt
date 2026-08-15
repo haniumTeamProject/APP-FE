@@ -29,28 +29,20 @@ class ArrivalFragment : Fragment() {
         val newDest = view.findViewById<View>(R.id.btn_new_dest)
         val end = view.findViewById<View>(R.id.btn_end)
 
-        // 시안은 목적지와 문 방향을 두 줄로 나눈다. 큰 줄은 어디에 왔는지, 작은 줄은 다음 행동이다.
         val dest = act.destination
         text.text = TextFormat.guidance(
             dest?.let { "${it.name}에\n도착했습니다" } ?: act.speech.lastUtterance.orEmpty()
         )
 
-        val door = when (dest?.doorSide) {
-            "left" -> getString(R.string.arrive_door_left)
-            "right" -> getString(R.string.arrive_door_right)
-            else -> null
-        }
-        if (door == null) hint.visibility = View.GONE else hint.text = door
+        // 문 방향(왼쪽/오른쪽)은 안내하지 않는다. 실내 위치 정확도가 문 좌·우까지
+        // 짚어줄 만큼은 아니라, 틀린 방향을 확신에 차 말하면 오히려 사용자를 헤매게 한다.
+        hint.visibility = View.GONE
 
         act.haptics.play(Haptics.Pattern.ARRIVE)
 
         // 도착 안내는 이 화면이 맡는다. 재생 루프가 아니라 여기서 말해야
         // 화면과 발화가 함께 나온다. [다시 듣기]가 재생할 마지막 문장도 이걸로 잡힌다.
-        val arriveMsg = buildString {
-            append(dest?.name ?: "")
-            append("에 도착했습니다.")
-            door?.let { append(" ").append(it) }
-        }
+        val arriveMsg = "${dest?.name ?: ""}에 도착했습니다."
         act.speech.speak(view, arriveMsg)
 
         // [새 목적지]는 홈으로 돌아가되 곧바로 음성 입력을 시작해 한 단계를 줄인다.

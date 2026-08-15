@@ -36,6 +36,6 @@
     { "currentStep": 10, "currentBeaconId": "B24", "nextBeaconId": "B25", "progress": 0.0, "event": "advance", "utterance": "오른쪽에 계단이 있습니다.", "haptic": "warn" },
     { "currentStep": 10, "currentBeaconId": "B24", "nextBeaconId": "B25", "progress": 0.6, "event": "none", "utterance": null, "haptic": null },
 
-    { "currentStep": 11, "currentBeaconId": "B25", "nextBeaconId": null, "progress": 1.0, "event": "arrive", "utterance": "409호입니다. 문은 왼쪽에 있습니다.", "haptic": "arrive" }
+    { "currentStep": 11, "currentBeaconId": "B25", "nextBeaconId": null, "progress": 1.0, "event": "arrive", "utterance": "409호에 도착했습니다.", "haptic": "arrive" }
   ]
 }

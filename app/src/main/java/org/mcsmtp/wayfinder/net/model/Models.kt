@@ -39,7 +39,8 @@ data class DestinationResponse(
 /**
  * @param aliases 음성 매칭용 별칭. "화1" 같은 내부 명칭과 사용자가 실제로 말하는
  *                "화장실"을 잇는 장치다. LLM 없이 매칭이 가능한 근거이기도 하다.
- * @param doorSide 도착 후 "문은 오른쪽에 있습니다" 안내에 쓴다. left / right / null
+ * @param doorSide 문이 난 방향(left / right / null). 실내 위치 정확도가 문 좌·우까지
+ *                짚어줄 만큼은 아니라 현재 앱에서는 안내하지 않는다(미사용).
  */
 data class Destination(
     val id: String,

@@ -82,8 +82,6 @@
     <string name="arrive_end">처음으로</string>
     <string name="arrive_end_sub">안내 끝내기</string>
     <string name="arrive_end_desc">처음으로, 버튼</string>
-    <string name="arrive_door_left">문은 왼쪽에 있습니다</string>
-    <string name="arrive_door_right">문은 오른쪽에 있습니다</string>
 
     <!-- 공통 -->
     <string name="err_route_not_found">경로를 찾을 수 없습니다.</string>
