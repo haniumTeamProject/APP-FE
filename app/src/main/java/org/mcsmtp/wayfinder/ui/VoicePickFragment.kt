@@ -34,7 +34,6 @@ abstract class VoicePickFragment<T> : Fragment() {
     private val handler = Handler(Looper.getMainLooper())
 
     private var statusText: TextView? = null
-    private var statusHint: TextView? = null
     private var retryBtn: View? = null
     private var listContainer: LinearLayout? = null
     private var listScroll: View? = null
@@ -59,11 +58,8 @@ abstract class VoicePickFragment<T> : Fragment() {
     /** 항목이 확정됐을 때. 다음 화면으로 전이한다. */
     protected abstract fun onPick(item: T)
 
-    /** 진입 시 발화할 안내(예시 포함). 예: "어느 건물에 계신가요? 예를 들어 도서관." */
-    protected abstract fun entryExampleSpeech(): String
-
-    /** "듣고 있어요" 아래 힌트. 예: "예를 들어 도서관". */
-    protected abstract fun exampleHintText(): String
+    /** 진입 시 발화할 안내. 예: "어느 건물에 계신가요?" */
+    protected abstract fun entrySpeech(): String
 
     /** 목록 머리말 아래 개수 문구. 예: "건물 3곳". */
     protected abstract fun listCountText(count: Int): String
@@ -79,7 +75,6 @@ abstract class VoicePickFragment<T> : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         act = requireActivity() as MainActivity
         statusText = view.findViewById(R.id.status_text)
-        statusHint = view.findViewById(R.id.status_hint)
         retryBtn = view.findViewById(R.id.btn_retry)
         listContainer = view.findViewById(R.id.dest_list)
         listScroll = view.findViewById(R.id.dest_scroll)
@@ -88,7 +83,6 @@ abstract class VoicePickFragment<T> : Fragment() {
 
         items = runCatching { loadItems() }.getOrElse { emptyList() }
         buildList(listContainer!!)
-        statusHint?.text = exampleHintText()
         view.findViewById<TextView>(R.id.dest_count).text = listCountText(items.size)
 
         // 듣는 중에는 목록을 TalkBack에서 숨긴다(마이크가 목록 발화를 인식하지 않게).
@@ -131,7 +125,7 @@ abstract class VoicePickFragment<T> : Fragment() {
         if (withExample) {
             // speakThen 콜백은 TTS 바인더 스레드에서 온다. SpeechRecognizer는 메인 스레드에서만
             // 만들 수 있으므로 다시 넘겨준다.
-            act.speech.speakThen(entryExampleSpeech()) {
+            act.speech.speakThen(entrySpeech()) {
                 handler.post { if (isAdded) stt?.start(sttCallback) }
             }
         } else {
@@ -237,7 +231,6 @@ abstract class VoicePickFragment<T> : Fragment() {
         stt?.destroy()
         stt = null
         statusText = null
-        statusHint = null
         retryBtn = null
         listContainer = null
         listScroll = null

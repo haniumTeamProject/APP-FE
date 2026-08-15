@@ -19,9 +19,7 @@ class FloorFragment : VoicePickFragment<Floor>() {
     override fun subtitleOf(item: Floor): String =
         getString(R.string.place_count, item.destinationCount)
 
-    override fun entryExampleSpeech(): String = getString(R.string.floor_enter_example)
-
-    override fun exampleHintText(): String = getString(R.string.floor_example)
+    override fun entrySpeech(): String = getString(R.string.floor_enter_example)
 
     override fun listCountText(count: Int): String =
         getString(R.string.floor_pick_count, count)
