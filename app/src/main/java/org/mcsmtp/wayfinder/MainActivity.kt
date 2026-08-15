@@ -17,6 +17,8 @@ import org.mcsmtp.wayfinder.net.model.Building
 import org.mcsmtp.wayfinder.net.model.Destination
 import org.mcsmtp.wayfinder.net.model.Floor
 import org.mcsmtp.wayfinder.net.model.Route
+import org.mcsmtp.wayfinder.onboarding.OnboardingFragment
+import org.mcsmtp.wayfinder.onboarding.OnboardingPrefs
 import org.mcsmtp.wayfinder.speech.SpeechOutput
 import org.mcsmtp.wayfinder.state.NavState
 import org.mcsmtp.wayfinder.state.NavStateMachine
@@ -76,7 +78,10 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        if (savedInstanceState == null) render(NavState.SELECTING_PLACE)
+        if (savedInstanceState == null) {
+            if (OnboardingPrefs(this).isDone()) render(NavState.SELECTING_PLACE)
+            else showOnboarding()
+        }
     }
 
     override fun onResume() {
@@ -89,6 +94,19 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         speech.shutdown()
         super.onDestroy()
+    }
+
+    /** 첫 실행 온보딩을 띄운다. 상태 머신 바깥의 관문이라 별도 태그로 붙인다. */
+    private fun showOnboarding() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace(R.id.fragment_container, OnboardingFragment(), TAG_ONBOARDING)
+        }
+    }
+
+    /** 온보딩이 끝나면 호출된다. 안내 진입 화면으로 전환한다. */
+    fun startAfterOnboarding() {
+        render(NavState.SELECTING_PLACE)
     }
 
     private fun render(state: NavState) {
@@ -148,5 +166,9 @@ class MainActivity : AppCompatActivity() {
                 null,
             )
         }, 300)
+    }
+
+    private companion object {
+        const val TAG_ONBOARDING = "ONBOARDING"
     }
 }
