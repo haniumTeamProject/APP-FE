@@ -15,20 +15,27 @@
     android:paddingTop="@dimen/screen_pad_top"
     android:paddingBottom="@dimen/screen_pad_bottom">
 
-    <!-- 장식용 큰 상자. 자식 텍스트까지 통째로 숨긴다. "no"만 쓰면 안쪽 텍스트가 새어 읽힌다. -->
+    <!--
+      머리말. 자식 텍스트는 통째로 숨긴다("no"만 쓰면 안쪽 텍스트가 새어 읽힌다).
+      건물 선택 화면에서는 이 머리말이 사용법 재열람(길게 누르기·접근성 액션)의 진입점이 된다 —
+      아래는 스크롤 목록이라 빈 곳을 길게 누를 자리가 없기 때문이다. FloorFragment 는 붙이지 않는다.
+    -->
     <LinearLayout
+        android:id="@+id/place_header"
         style="@style/Card.Hero"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:importantForAccessibility="noHideDescendants">
 
         <TextView
+            android:id="@+id/place_title"
             style="@style/Text.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/place_title" />
 
         <TextView
+            android:id="@+id/place_sub"
             style="@style/Text.Body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

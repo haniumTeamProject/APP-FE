@@ -25,7 +25,7 @@ import org.mcsmtp.wayfinder.state.NavState
 import org.mcsmtp.wayfinder.state.NavStateMachine
 import org.mcsmtp.wayfinder.ui.ArrivalFragment
 import org.mcsmtp.wayfinder.ui.DestinationFragment
-import org.mcsmtp.wayfinder.ui.HomeFragment
+import org.mcsmtp.wayfinder.ui.FloorFragment
 import org.mcsmtp.wayfinder.ui.NavigationFragment
 import org.mcsmtp.wayfinder.ui.PlaceFragment
 import org.mcsmtp.wayfinder.util.Haptics
@@ -76,9 +76,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 when (machine.current) {
                     NavState.NAVIGATING -> confirmStop()
-                    // 진입 화면과 홈에서 뒤로가기는 앱을 닫는다. 그 위로 갈 곳이 없다.
+                    // 진입 화면(건물 선택)에서 뒤로가기는 앱을 닫는다. 그 위로 갈 곳이 없다.
                     // 온보딩 중에도 machine.current는 SELECTING_PLACE라 이 분기가 적용되어 앱이 닫힌다 — 1회성 최초 실행 흐름이라 의도된 동작.
-                    NavState.SELECTING_PLACE, NavState.READY -> finish()
+                    NavState.SELECTING_PLACE -> finish()
+                    // 층 선택에서 뒤로가기는 건물 선택으로 돌아간다.
+                    NavState.SELECTING_FLOOR -> machine.transition(NavState.SELECTING_PLACE)
                     else -> machine.reset()
                 }
             }
@@ -132,7 +134,7 @@ class MainActivity : AppCompatActivity() {
     private fun render(state: NavState) {
         val fragment: Fragment = when (state) {
             NavState.SELECTING_PLACE -> PlaceFragment()
-            NavState.READY -> HomeFragment()
+            NavState.SELECTING_FLOOR -> FloorFragment()
             NavState.LISTENING -> DestinationFragment()
             NavState.ROUTING, NavState.NAVIGATING -> NavigationFragment()
             NavState.ARRIVED -> ArrivalFragment()
