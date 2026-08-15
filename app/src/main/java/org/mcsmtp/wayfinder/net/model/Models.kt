@@ -15,6 +15,7 @@ data class BuildingResponse(
 data class Building(
     val id: String,
     val name: String,
+    val aliases: List<String> = emptyList(),  // 음성 매칭용 별칭
     val floors: List<Floor> = emptyList(),
 )
 
@@ -22,6 +23,7 @@ data class Floor(
     val id: String,          // floorId — 목적지·경로 요청의 키
     val floor: Int,          // 층 번호
     val name: String,        // "4층"
+    val aliases: List<String> = emptyList(),  // 음성 매칭용 별칭("사층","4" 등)
     val major: Int? = null,  // 100 + 층. 2차 자동 인식에 쓴다
     val destinationCount: Int = 0,
 )

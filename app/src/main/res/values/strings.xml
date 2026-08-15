@@ -3,15 +3,16 @@
     <string name="brand_mark">WAYFINDER</string>
 
     <!-- ⓪ 건물·층 선택 -->
-    <string name="place_title">어느 건물인가요?</string>
-    <string name="place_sub">건물을 골라주세요</string>
     <string name="place_count">목적지 %1$d곳</string>
     <string name="place_floors">%1$d개 층</string>
-    <string name="place_enter">어느 건물에 계신가요? 위아래로 넘겨 골라주세요.</string>
 
-    <string name="floor_title">몇 층인가요?</string>
-    <string name="floor_sub">층을 골라주세요</string>
-    <string name="floor_enter">%1$s, 몇 층에 계신가요? 위아래로 넘겨 골라주세요.</string>
+    <!-- 음성으로 건물·층 고르기 -->
+    <string name="building_enter_example">어느 건물에 계신가요? 예를 들어 도서관.</string>
+    <string name="building_example">예를 들어 “도서관”</string>
+    <string name="building_pick_count">건물 %1$d곳</string>
+    <string name="floor_enter_example">몇 층에 계신가요? 예를 들어 4층.</string>
+    <string name="floor_example">예를 들어 “4층”</string>
+    <string name="floor_pick_count">층 %1$d개</string>
 
     <!-- ① 홈 -->
     <string name="home_status">안내 준비됨</string>

@@ -3,23 +3,26 @@
     {
       "id": "suwon_ict",
       "name": "수원대 ICT관",
+      "aliases": ["수원대", "ICT관", "아이시티관", "아이씨티관", "IT관", "정보통신관"],
       "floors": [
-        { "id": "suwon_ict_4", "floor": 4, "name": "4층", "major": 104, "destinationCount": 24 },
-        { "id": "suwon_ict_1", "floor": 1, "name": "1층", "major": 101, "destinationCount": 6 }
+        { "id": "suwon_ict_4", "floor": 4, "name": "4층", "aliases": ["사층", "4", "사", "네층"], "major": 104, "destinationCount": 24 },
+        { "id": "suwon_ict_1", "floor": 1, "name": "1층", "aliases": ["일층", "1", "일"], "major": 101, "destinationCount": 6 }
       ]
     },
     {
       "id": "future",
       "name": "미래혁신관",
+      "aliases": ["미래관", "혁신관", "미래혁신"],
       "floors": [
-        { "id": "future_1", "floor": 1, "name": "1층", "major": 101, "destinationCount": 5 }
+        { "id": "future_1", "floor": 1, "name": "1층", "aliases": ["일층", "1", "일"], "major": 101, "destinationCount": 5 }
       ]
     },
     {
       "id": "library",
       "name": "도서관",
+      "aliases": ["도서관", "책방", "라이브러리"],
       "floors": [
-        { "id": "library_1", "floor": 1, "name": "1층", "major": 101, "destinationCount": 5 }
+        { "id": "library_1", "floor": 1, "name": "1층", "aliases": ["일층", "1", "일"], "major": 101, "destinationCount": 5 }
       ]
     }
   ]

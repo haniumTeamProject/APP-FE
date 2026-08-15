@@ -17,6 +17,7 @@
     android:paddingBottom="@dimen/screen_pad_bottom">
 
     <LinearLayout
+        android:id="@+id/dest_hero"
         style="@style/Card.Hero"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
