@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import org.mcsmtp.wayfinder.MainActivity
 import org.mcsmtp.wayfinder.R
@@ -88,6 +89,13 @@ class DestinationFragment : Fragment() {
 
         // [다시 말하기]는 예시 없이 곧장 마이크를 연다. 예시는 첫 진입에서 이미 들었다.
         retryBtn?.setOnClickListener { ensurePermissionThenListen(withExample = false) }
+
+        // 앱 진입 화면이므로, 히어로를 길게 눌러 사용법을 다시 볼 수 있게 한다(온보딩은 1회성이므로).
+        val hero = view.findViewById<View>(R.id.dest_hero)
+        hero?.setOnLongClickListener { act.showUsage(); true }
+        ViewCompat.addAccessibilityAction(hero, getString(R.string.home_howto_action)) { _, _ ->
+            act.showUsage(); true
+        }
 
         ensurePermissionThenListen(withExample = true)
     }
