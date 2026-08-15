@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import org.mcsmtp.wayfinder.MainActivity
 import org.mcsmtp.wayfinder.R
@@ -47,5 +48,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         act.moveAccessibilityFocus(speak)
         // 현재 건물·층을 먼저 알린다. 사용자가 위치를 확인할 유일한 창구다.
         act.speech.speak(view, getString(R.string.home_enter, building, floor))
+
+        // 온보딩은 1회성이므로, 조작법을 홈에서 길게 눌러 다시 들을 수 있게 한다.
+        view.setOnLongClickListener {
+            act.speech.speak(view, getString(R.string.home_howto_speech))
+            true
+        }
+        // TalkBack에서 길게 누르기는 발견이 어려워, 커스텀 접근성 액션으로도 노출한다.
+        ViewCompat.addAccessibilityAction(
+            view, getString(R.string.home_howto_action)
+        ) { _, _ ->
+            act.speech.speak(view, getString(R.string.home_howto_speech))
+            true
+        }
     }
 }
