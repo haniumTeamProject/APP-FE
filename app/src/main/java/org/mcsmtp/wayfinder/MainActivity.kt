@@ -17,6 +17,9 @@ import org.mcsmtp.wayfinder.net.model.Building
 import org.mcsmtp.wayfinder.net.model.Destination
 import org.mcsmtp.wayfinder.net.model.Floor
 import org.mcsmtp.wayfinder.net.model.Route
+import org.mcsmtp.wayfinder.onboarding.OnboardingFragment
+import org.mcsmtp.wayfinder.onboarding.OnboardingPrefs
+import org.mcsmtp.wayfinder.onboarding.UsageFragment
 import org.mcsmtp.wayfinder.speech.SpeechOutput
 import org.mcsmtp.wayfinder.state.NavState
 import org.mcsmtp.wayfinder.state.NavStateMachine
@@ -67,16 +70,24 @@ class MainActivity : AppCompatActivity() {
         // 확인 없이 취소되면 사용자가 이동 중에 안내를 잃는다.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                // 사용법 화면이 떠 있으면 앱을 닫지 말고 그 화면만 닫는다.
+                if (supportFragmentManager.findFragmentByTag(TAG_USAGE) != null) {
+                    closeUsage(); return
+                }
                 when (machine.current) {
                     NavState.NAVIGATING -> confirmStop()
                     // 진입 화면과 홈에서 뒤로가기는 앱을 닫는다. 그 위로 갈 곳이 없다.
+                    // 온보딩 중에도 machine.current는 SELECTING_PLACE라 이 분기가 적용되어 앱이 닫힌다 — 1회성 최초 실행 흐름이라 의도된 동작.
                     NavState.SELECTING_PLACE, NavState.READY -> finish()
                     else -> machine.reset()
                 }
             }
         })
 
-        if (savedInstanceState == null) render(NavState.SELECTING_PLACE)
+        if (savedInstanceState == null) {
+            if (OnboardingPrefs(this).isDone()) render(NavState.SELECTING_PLACE)
+            else showOnboarding()
+        }
     }
 
     override fun onResume() {
@@ -89,6 +100,33 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         speech.shutdown()
         super.onDestroy()
+    }
+
+    /** 첫 실행 온보딩을 띄운다. 상태 머신 바깥의 관문이라 별도 태그로 붙인다. */
+    private fun showOnboarding() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace(R.id.fragment_container, OnboardingFragment(), TAG_ONBOARDING)
+        }
+    }
+
+    /** 온보딩이 끝나면 호출된다. 안내 진입 화면으로 전환한다. */
+    fun startAfterOnboarding() {
+        render(NavState.SELECTING_PLACE)
+    }
+
+    /** 홈에서 길게 눌러 사용법 화면을 띄운다. 상태 머신 바깥의 화면이라 별도 태그로 붙인다. */
+    fun showUsage() {
+        if (supportFragmentManager.findFragmentByTag(TAG_USAGE) != null) return
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace(R.id.fragment_container, UsageFragment(), TAG_USAGE)
+        }
+    }
+
+    /** 사용법 화면을 닫고 현재 상태 화면으로 돌아간다. */
+    fun closeUsage() {
+        render(machine.current)
     }
 
     private fun render(state: NavState) {
@@ -148,5 +186,10 @@ class MainActivity : AppCompatActivity() {
                 null,
             )
         }, 300)
+    }
+
+    private companion object {
+        const val TAG_ONBOARDING = "ONBOARDING"
+        const val TAG_USAGE = "USAGE"
     }
 }
