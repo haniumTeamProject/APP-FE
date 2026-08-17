@@ -124,4 +124,9 @@
     <string name="usage_close">닫기</string>
     <string name="usage_close_desc">닫기, 버튼</string>
     <string name="usage_speech">사용법이에요. 화면을 두 번 두드리면 고르거나 시작하고, 흔들면 방금 안내를 다시 듣고, 화면을 길게 누르면 이 사용법을 다시 들을 수 있어요. 닫으려면 뒤로 가세요.</string>
+
+    <!-- BLE 스캔이 안 될 때. 위치를 모르면 목적지를 찾을 수 없으므로 반드시 알려준다 —
+         조용히 아무 일도 안 일어나면 사용자는 고장으로 여긴다. -->
+    <string name="err_ble_permission">블루투스 검색 권한이 필요합니다. 설정에서 허용해 주세요.</string>
+    <string name="err_bluetooth_off">블루투스가 꺼져 있습니다. 켜 주세요.</string>
 </resources>

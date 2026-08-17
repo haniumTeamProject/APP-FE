@@ -2,16 +2,29 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- BLE 스캔 (API 31+). neverForLocation: 위치 추적 목적이 아님을 선언 -->
-    <uses-permission
-        android:name="android.permission.BLUETOOTH_SCAN"
-        android:usesPermissionFlags="neverForLocation" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- BLE 스캔 — server/bleapp 과 똑같이 맞췄다.
+         두 앱이 같은 폰에서 같은 비콘을 보는데 한쪽만 잡히면 차이는 여기다.
 
-    <!-- API 30 이하에서 BLE 스캔에 필요 -->
-    <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION"
+         neverForLocation 을 붙이면 안 된다. "위치 추적에 안 쓰겠다"는 선언인데,
+         안드로이드가 그 약속을 강제하느라 위치를 유추할 수 있는 광고를 걸러낸다.
+         그러면 주변 가전은 다 보이는데 우리 비콘만 안 잡힌다.
+         이 앱은 비콘으로 실내 위치를 정하는 것이 본래 목적이라 그 선언이 맞지 않는다. -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+
+    <!-- API 30 이하 호환 -->
+    <uses-permission android:name="android.permission.BLUETOOTH"
         android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+
+    <!-- 위치 권한. **maxSdkVersion 을 걸지 않는다.**
+         neverForLocation 을 뺀 이상 BLE 스캔 결과를 위치 정보로 취급하므로,
+         API 31+ 에서도 이 권한이 있어야 광고가 걸러지지 않는다.
+         maxSdkVersion="30" 이면 그 위 버전에서는 선언조차 안 되어 요청할 수도 없다. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- 음성 입력 (SpeechRecognizer) -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />

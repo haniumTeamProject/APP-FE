@@ -74,11 +74,24 @@ class DestinationFragment : Fragment() {
 
         stt = SttManager(requireContext())
 
-        val floorId = act.selectedFloor?.id
-        destinations = runCatching {
-            if (floorId != null) act.api.destinations(floorId).destinations else emptyList()
-        }.getOrElse { emptyList() }
-        buildList(listContainer!!)
+        // 목록은 **서버가 준다.** 앱은 층을 모르고, 알 필요도 없다 —
+        // 서버가 비콘으로 건물·층을 정한 뒤 그 층의 목적지만 내려보낸다.
+        //
+        // 청하기는 하되 기다리지는 않는다. 앱이 켜진 직후에는 아직 비콘이 안 잡혀
+        // 위치를 모르므로 서버가 빈손으로 답한다. 위치가 정해지면 서버가 알아서
+        // 목록을 보내주고, 아래 리스너가 그때 화면을 채운다.
+        destinations = emptyList()
+        act.nav.requestList()
+        act.nav.addScreenListener(screenListener)
+
+        // **마이크를 여는 시점은 서버가 정한다.**
+        //
+        // 서버가 listenAfter 를 주면 NavCoordinator 가 발화를 끝낸 뒤 이걸 부른다.
+        // 이걸 등록하지 않으면 서버가 "지금 들어" 해도 아무 일도 일어나지 않는다 —
+        // 화면에는 "듣고 있어요"만 뜨고 마이크는 안 열린 상태가 된다.
+        act.nav.setMicListener {
+            if (isAdded) handler.post { ensurePermissionThenListen(withExample = false) }
+        }
         view.findViewById<TextView>(R.id.dest_count).text =
             getString(R.string.dest_pick_count, destinations.size)
 
@@ -97,7 +110,24 @@ class DestinationFragment : Fragment() {
             act.showUsage(); true
         }
 
-        ensurePermissionThenListen(withExample = true)
+        // 진입하자마자 스스로 마이크를 열지 않는다. 서버가 연결 직후 보내는
+        // "목적지를 말씀해 주세요"(listenAfter=true)가 그 일을 한다.
+        // 둘 다 하면 앱 예시 발화와 서버 발화가 겹쳐 서로를 받아적는다.
+        //
+        // 다만 권한은 미리 받아둔다. 서버 신호가 왔을 때 권한 팝업이 뜨면
+        // 그 사이에 발화가 끝나버려 마이크가 헛돈다.
+        ensureMicPermission()
+    }
+
+    /** 마이크 권한만 미리 받아둔다. 여는 것은 서버 신호가 왔을 때. */
+    private fun ensureMicPermission() {
+        val granted = ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+        if (!granted) {
+            pendingExample = false
+            requestMic.launch(Manifest.permission.RECORD_AUDIO)
+        }
     }
 
     private fun ensurePermissionThenListen(withExample: Boolean) {
@@ -158,19 +188,15 @@ class DestinationFragment : Fragment() {
         override fun onResult(candidates: List<String>) {
             if (!isAdded || !awaitingResult) return
             awaitingResult = false
-            // 인식 후보를 순서대로 매칭해 첫 성공을 채택한다.
-            for (spoken in candidates) {
-                val matched = act.api.match(spoken, destinations)
-                when {
-                    matched.size == 1 -> {
-                        select(matched.first()); return
-                    }
-                    // TODO(2차): DISAMBIGUATE 상태로 "409호가 두 곳입니다" 되묻기.
-                    //            지금은 첫 후보를 채택한다.
-                    matched.size > 1 -> {
-                        select(matched.first()); return
-                    }
-                }
+            // **받아적은 말을 그대로 서버에 올린다.** 매칭은 서버가 한다.
+            //
+            // 예전에는 여기서 별칭 표와 대조하고 후보가 여럿이면 말없이 첫 번째를
+            // 골랐다. 화면을 볼 수 없는 사용자는 잘못 간 것을 알 방법이 없었다.
+            // 이제 후보가 여럿이면 서버가 되묻고, 그 답도 같은 경로로 올라간다.
+            val spoken = candidates.firstOrNull()
+            if (spoken != null) {
+                act.nav.say(spoken)
+                return
             }
             // onResult 에서 넘어온 실패는 이미 awaitingResult 를 소비했다.
             handleFailure()
@@ -234,11 +260,32 @@ class DestinationFragment : Fragment() {
             else View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
     }
 
+    /**
+     * 서버가 내려준 화면 정보를 그린다.
+     *
+     * 목적지 목록은 위치가 정해진 뒤에야 온다. 언제 오는지를 앱이 알 필요가 없도록
+     * 서버가 준비되면 밀어준다 — 앱이 "지금쯤 다시 물어볼까"를 판단하게 두면
+     * 반드시 빠뜨리는 경우가 생긴다.
+     */
+    private val screenListener = org.mcsmtp.wayfinder.nav.NavCoordinator.ScreenListener { msg ->
+        val items = msg.screen?.items ?: return@ScreenListener
+        if (items.isEmpty() || !isAdded) return@ScreenListener
+        destinations = items.map { Destination(id = it.id, name = it.name) }
+        listContainer?.let { c ->
+            c.removeAllViews()
+            buildList(c)
+        }
+        view?.findViewById<TextView>(R.id.dest_count)?.text =
+            getString(R.string.dest_pick_count, destinations.size)
+    }
+
     private fun select(dest: Destination) {
         awaitingResult = false
         stt?.cancel()
         act.destination = dest
-        act.machine.transition(NavState.ROUTING)
+        // 목록에서 고른 것도 서버가 처리한다 — id 를 보내면 해석을 건너뛴다.
+        // 화면 전환은 서버가 내려주는 state 를 따라간다(NavCoordinator).
+        act.nav.pick(dest.id)
     }
 
     private fun buildList(container: LinearLayout) {
@@ -266,6 +313,8 @@ class DestinationFragment : Fragment() {
         }
 
     override fun onDestroyView() {
+        act.nav.removeScreenListener(screenListener)
+        act.nav.setMicListener(null)
         handler.removeCallbacksAndMessages(null)
         stt?.destroy()
         stt = null

@@ -80,23 +80,20 @@ class NavigationFragment : Fragment() {
         }, 600)
     }
 
+    /**
+     * 안내는 **서버가 끌고 간다.** 여기서 할 일은 화면을 준비하는 것뿐이다.
+     *
+     * 예전에는 목 이벤트 목록을 타이머로 하나씩 재생했다(`tick`). 그러면 실제
+     * 위치와 무관하게 시간만 흐르면 다음 지점으로 넘어간다. 이제 비콘이 바뀌는
+     * 시점을 서버가 판정해 내려보내므로, 화면은 그것을 받아 그리기만 한다.
+     * 진행 표시는 screen.step / screen.totalSteps 로 온다.
+     */
     private fun startNavigation(act: MainActivity, root: View) {
-        val route = runCatching { act.api.route(act.destination) }.getOrNull()
-        if (route == null) {
-            act.speech.speak(root, getString(R.string.err_route_not_found))
-            act.machine.reset()
-            return
-        }
-        act.route = route
-        act.machine.transition(NavState.NAVIGATING)
-
-        val payload = runCatching { act.api.navigationEvents(act.destination) }.getOrNull()
-        events = payload?.events ?: emptyList()
-        intervalMs = payload?.intervalMs ?: 1000L
-        totalSteps = route.steps.size.takeIf { it > 0 } ?: events.maxOfOrNull { it.currentStep } ?: 0
+        val screen = act.nav.lastMessage?.screen
+        totalSteps = screen?.totalSteps ?: 0
         index = 0
         buildDots(totalSteps)
-        handler.post(tick)
+        screen?.step?.let { fillDots(it) }
     }
 
     /** 목 이벤트를 하나씩 흘려보낸다. 실제 서버가 붙으면 WebSocket onMessage 로 대체된다. */

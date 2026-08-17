@@ -1,18 +1,23 @@
 package org.mcsmtp.wayfinder
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.accessibility.AccessibilityManager
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import org.mcsmtp.wayfinder.mock.MockApi
+import org.mcsmtp.wayfinder.ble.BleScanner
+import org.mcsmtp.wayfinder.nav.NavCoordinator
 import org.mcsmtp.wayfinder.net.model.Building
 import org.mcsmtp.wayfinder.net.model.Destination
 import org.mcsmtp.wayfinder.net.model.Floor
@@ -37,11 +42,16 @@ class MainActivity : AppCompatActivity() {
     lateinit var machine: NavStateMachine; private set
     lateinit var speech: SpeechOutput; private set
     lateinit var haptics: Haptics; private set
-    lateinit var api: MockApi; private set
+    /**
+     * 서버와의 통로. **판단은 전부 서버가 한다** — 목적지 매칭도, 경로도, 무엇을
+     * 언제 말할지도. 예전에는 MockApi 가 assets JSON 으로 그 흉내를 냈는데,
+     * 실제 서버가 붙었으므로 걷어냈다.
+     */
+    lateinit var nav: NavCoordinator; private set
 
     /**
-     * 현재 건물·층. 사용자가 고르지 않고 [autoDetectLocation]이 정한다.
-     * 실제로는 서버가 비콘으로 판별하고, 목에서는 기본 위치로 대체한다. Fragment 간 공유 상태.
+     * 현재 건물·층. **서버가 비콘으로 판별한다** — 앱은 고르지 않는다.
+     * 화면에 표시할 일이 있을 때만 쓰고, 판정에는 관여하지 않는다.
      */
     var selectedBuilding: Building? = null
     var selectedFloor: Floor? = null
@@ -63,7 +73,15 @@ class MainActivity : AppCompatActivity() {
         machine = NavStateMachine()
         speech = SpeechOutput(this)
         haptics = Haptics(this)
-        api = MockApi(this)
+        val scanner = BleScanner.getInstance(this)
+        nav = NavCoordinator(scanner.client(), speech, haptics, machine)
+        nav.start()
+        // 스캔이 시작되어야 WS 도 붙고 비콘도 올라간다. 위치를 알아야 목적지를
+        // 찾을 수 있으므로 앱이 뜨자마자 켠다 — 단, **권한을 받은 뒤에.**
+        //
+        // API 31+ 에서 BLUETOOTH_SCAN 은 사용자 승인이 필요하다. 매니페스트에만
+        // 적어두고 바로 부르면 SecurityException 으로 앱이 즉사한다.
+        ensureBlePermissionThenScan()
 
         machine.addListener { _, to -> render(to) }
 
@@ -91,22 +109,76 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** 진입: 위치를 자동 판별하고 곧바로 목적지 음성 입력을 연다. */
+    /** 진입: 곧바로 목적지 음성 입력을 연다.
+     *
+     * 건물·층은 **서버가 비콘으로 판별한다** — 앱은 묻지도 고르지도 않는다.
+     * 위치가 정해지기 전에 목적지를 말하면 서버가 "아직 위치를 확인하지 못했습니다"
+     * 라고 답하고 다시 듣는다.
+     */
     private fun startEntry() {
-        autoDetectLocation()
         render(NavState.LISTENING)
     }
 
     /**
-     * 현재 위치(건물·층)를 정한다. 사용자는 고르지 않는다.
-     * 실제로는 서버가 비콘(UUID→건물, major→층)으로 판별한다. 목에서는 기본 위치로 대체한다.
-     * 실제 비콘/WS 연동(8단계)이 붙으면 이 자리를 서버 판별로 바꾼다.
+     * BLE 스캔 권한을 받고 스캔을 시작한다.
+     *
+     * 필요한 권한이 안드로이드 버전마다 다르다.
+     *   API 31+   BLUETOOTH_SCAN (+ 연결용 BLUETOOTH_CONNECT)
+     *   API 30-   ACCESS_FINE_LOCATION — 그때는 BLE 스캔이 위치 권한에 묶여 있었다
+     *
+     * 거절해도 앱은 죽지 않는다. 다만 위치를 알 수 없어 목적지를 찾지 못하므로
+     * 그 사실을 말해준다 — 조용히 아무 일도 안 일어나면 사용자는 고장으로 여긴다.
      */
-    private fun autoDetectLocation() {
-        val buildings = runCatching { api.buildings().buildings }.getOrElse { emptyList() }
-        val building = buildings.firstOrNull { it.id == "suwon_ict" } ?: buildings.firstOrNull()
-        selectedBuilding = building
-        selectedFloor = building?.floors?.firstOrNull { it.floor == 4 } ?: building?.floors?.firstOrNull()
+    private fun ensureBlePermissionThenScan() {
+        // **위치 권한을 모든 버전에서 함께 받는다.**
+        //
+        // neverForLocation 을 빼면 안드로이드는 BLE 스캔 결과를 위치 정보로 취급한다.
+        // 그래서 API 31+ 에서도 위치 권한이 없으면 비콘 광고가 걸러진다 —
+        // 주변 가전은 보이는데 우리 비콘만 안 잡히는 상태가 된다.
+        val needed = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            arrayOf(Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+        } else {
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+        val missing = needed.filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+        if (missing.isEmpty()) {
+            startScanSafely(); return
+        }
+        blePermissionLauncher.launch(missing.toTypedArray())
+    }
+
+    private val blePermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+            // 위치 권한만 거절해도 스캔은 시작한다 — 다만 비콘이 안 잡힐 수 있어
+            // 그 사실을 알려준다. 조용히 실패하면 사용자는 고장으로 여긴다.
+            val bt = result.entries.filter { it.key != Manifest.permission.ACCESS_FINE_LOCATION }
+            if (bt.all { it.value }) {
+                if (result[Manifest.permission.ACCESS_FINE_LOCATION] == false) {
+                    android.util.Log.w("MainActivity",
+                        "위치 권한 거절 — BLE 스캔에서 비콘이 걸러질 수 있다")
+                }
+                startScanSafely()
+            } else {
+                speech.speak(null, getString(R.string.err_ble_permission))
+            }
+        }
+
+    /**
+     * 권한이 있어도 실패할 수 있다 — 블루투스가 꺼져 있거나 기기가 BLE 를 지원하지 않으면.
+     * 그때 죽지 않고 이유를 말해준다.
+     */
+    private fun startScanSafely() {
+        val scanner = BleScanner.getInstance(this)
+        if (!scanner.isBluetoothEnabled) {
+            speech.speak(null, getString(R.string.err_bluetooth_off))
+            return
+        }
+        runCatching { scanner.startScan() }
+            .onFailure { android.util.Log.e("MainActivity", "스캔 시작 실패", it) }
     }
 
     override fun onResume() {
@@ -117,6 +189,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        nav.stop()
         speech.shutdown()
         super.onDestroy()
     }
@@ -184,6 +257,9 @@ class MainActivity : AppCompatActivity() {
         destination = null
         route = null
         speech.clear()
+        // 서버에도 알린다. 안 알리면 서버는 계속 안내 중이라 여기고 비콘이 바뀔
+        // 때마다 발화를 내려보낸다 — 사용자는 취소했는데 말이 계속 나온다.
+        nav.cancel()
         machine.reset()
     }
 

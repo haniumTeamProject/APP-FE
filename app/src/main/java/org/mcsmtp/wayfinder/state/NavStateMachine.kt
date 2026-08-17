@@ -25,10 +25,12 @@ class NavStateMachine {
      * 취소·중지·종료가 모두 진입 화면으로 모인다.
      */
     private val allowed: Map<NavState, Set<NavState>> = mapOf(
-        NavState.LISTENING to setOf(NavState.ROUTING),
+        // ROUTING 은 남겨두지만 서버가 쓰지 않는다 — 경로 계산이 순간이라
+        // 별도 화면이 필요 없고, 서버는 listening 에서 곧장 navigating 으로 넘긴다.
+        NavState.LISTENING to setOf(NavState.ROUTING, NavState.NAVIGATING),
         NavState.ROUTING to setOf(NavState.NAVIGATING, NavState.LISTENING),
         NavState.NAVIGATING to setOf(NavState.ARRIVED, NavState.LISTENING),
-        NavState.ARRIVED to setOf(NavState.LISTENING),
+        NavState.ARRIVED to setOf(NavState.LISTENING, NavState.NAVIGATING),
     )
 
     fun addListener(l: Listener) {
