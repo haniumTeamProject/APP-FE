@@ -90,12 +90,23 @@ class DestinationFragment : Fragment() {
         // [다시 말하기]는 예시 없이 곧장 마이크를 연다. 예시는 첫 진입에서 이미 들었다.
         retryBtn?.setOnClickListener { ensurePermissionThenListen(withExample = false) }
 
-        // 앱 진입 화면이므로, 히어로를 길게 눌러 사용법을 다시 볼 수 있게 한다(온보딩은 1회성이므로).
+        // 사용법 재열람을 **TalkBack 사용자도 닿게** 한다.
+        //
+        // 듣는 화면은 STT 가 자기 TalkBack 소리를 인식하지 않도록 히어로를 통째로
+        // 접근성에서 숨긴다(noHideDescendants). 그래서 히어로의 길게 누르기·커스텀 액션은
+        // 정작 이 기능이 필요한 시각장애인에게 도달하지 않는다.
+        // 대신 STT 가 실패해 나타나는 [다시 말하기] 버튼(접근 가능, 재시도·목록폴백 두 상태
+        // 모두 표시됨)에 "사용법 듣기" 액션을 함께 달아, 조작을 잊어 헤매는 사용자가 실제로
+        // 도달하는 지점에서 사용법에 닿게 한다.
+        retryBtn?.let { rb ->
+            ViewCompat.addAccessibilityAction(rb, getString(R.string.home_howto_action)) { _, _ ->
+                act.showUsage(); true
+            }
+        }
+
+        // 길게 누르기는 저시력·정안 사용자를 위해 그대로 둔다(터치로 히어로를 누를 수 있는 경우).
         val hero = view.findViewById<View>(R.id.dest_hero)
         hero?.setOnLongClickListener { act.showUsage(); true }
-        ViewCompat.addAccessibilityAction(hero, getString(R.string.home_howto_action)) { _, _ ->
-            act.showUsage(); true
-        }
 
         ensurePermissionThenListen(withExample = true)
     }
