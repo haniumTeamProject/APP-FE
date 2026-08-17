@@ -99,7 +99,24 @@ public class BleScanner {
      * 지금은 전 비콘이 같은 값이라 건물 판별에 MAC 을 쓴다.
      */
     private static final String BEACON_UUID = "8ec76ea3-6668-48da-9866-75be8bc86f4d";
+
+    /**
+     * 광고에 실제로 실리는 바이트. **두 벌을 들고 비교한다.**
+     *
+     * ESP32 의 BLEBeacon 은 UUID 를 문자열 순서 그대로 싣지 않는다. BLEUUID 가
+     * 128비트 값을 ESP-IDF 방식(리틀엔디언)으로 담고 있어서, setProximityUUID 가
+     * 그 내부 표현을 그대로 복사하면 **바이트가 뒤집힌 채로 나간다.**
+     *
+     *     문자열   8e c7 6e a3 ... 6f 4d
+     *     광고     4d 6f ... a3 6e c7 8e
+     *
+     * 회사 ID 를 0x004C 가 아니라 0x4C00 으로 넣어야 했던 것과 같은 이유다.
+     * 어느 쪽으로 나가는지는 펌웨어 라이브러리 판에 따라 달라서, 기기를 다시 구워
+     * 확인하는 것보다 양쪽을 다 받아주는 편이 확실하다. 남의 UUID 가 우연히
+     * 우리 것의 역순일 확률은 없다.
+     */
     private static final byte[] BEACON_UUID_BYTES = hexToBytes(BEACON_UUID);
+    private static final byte[] BEACON_UUID_REVERSED = reversed(BEACON_UUID_BYTES);
 
     private static byte[] hexToBytes(String uuid) {
         String hex = uuid.replace("-", "");
@@ -107,6 +124,12 @@ public class BleScanner {
         for (int i = 0; i < out.length; i++) {
             out[i] = (byte) Integer.parseInt(hex.substring(i * 2, i * 2 + 2), 16);
         }
+        return out;
+    }
+
+    private static byte[] reversed(byte[] src) {
+        byte[] out = new byte[src.length];
+        for (int i = 0; i < src.length; i++) out[i] = src[src.length - 1 - i];
         return out;
     }
 
@@ -531,6 +554,11 @@ public class BleScanner {
             int[] ids = parseIBeacon(result);
             if (ids != null) {
                 sentCount++;
+                if (sentCount == 1) {
+                    // 첫 통과 때 UUID 를 한 번 찍는다. 펌웨어가 문자열 그대로 실었는지
+                    // 뒤집어 실었는지를 이 한 줄로 알 수 있다.
+                    Log.d(LOG_TAG, "UUID 통과 — 광고에 실린 값 " + uuidOfResult(result));
+                }
                 if (sentCount % 60 == 1) {
                     Log.d(LOG_TAG, "보냄 " + name + " " + address
                             + " major=" + ids[0] + " minor=" + ids[1]
@@ -588,10 +616,29 @@ public class BleScanner {
         }
 
         private boolean uuidMatches(byte[] md) {
+            return matches(md, BEACON_UUID_BYTES) || matches(md, BEACON_UUID_REVERSED);
+        }
+
+        private boolean matches(byte[] md, byte[] want) {
             for (int i = 0; i < 16; i++) {
-                if (md[2 + i] != BEACON_UUID_BYTES[i]) return false;
+                if (md[2 + i] != want[i]) return false;
             }
             return true;
+        }
+
+        /** 로그용 — iBeacon 모양인 제조사 데이터를 찾아 UUID 부분만 뽑는다. */
+        private String uuidOfResult(ScanResult result) {
+            if (result.getScanRecord() == null) return "?";
+            android.util.SparseArray<byte[]> all =
+                    result.getScanRecord().getManufacturerSpecificData();
+            if (all == null) return "?";
+            for (int i = 0; i < all.size(); i++) {
+                byte[] md = all.valueAt(i);
+                if (md == null || md.length < 23) continue;
+                if (md[0] != IBEACON_TYPE || md[1] != IBEACON_LENGTH) continue;
+                return uuidOf(md);
+            }
+            return "?";
         }
 
         private String uuidOf(byte[] md) {
