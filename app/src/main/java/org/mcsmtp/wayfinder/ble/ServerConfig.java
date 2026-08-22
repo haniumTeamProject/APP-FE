@@ -19,3 +19,5 @@ public final class ServerConfig {
      */
     public static final String NAVIGATION_URL = "wss://hanium.mcsmtp.org/ws/navigation";
 }
+//
+//wss://hanium.mcsmtp.org/ws/navigation
